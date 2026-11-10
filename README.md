@@ -5,6 +5,13 @@ Services customer-service agent using Microsoft IQ, then bring Hotel Payroll
 and Hotel Treasurer into the same Microsoft Teams group chat. These two agents
 with accounts coordinate payroll funding with human approval through Agent 365.
 
+[![Deploy this demo](docs/images/deploy-button.svg)](https://aka.ms/ignite26-brk301/deploy)
+
+Deploy Azure resources for either scenario or both in your own subscription.
+Then follow the [post-deployment steps](docs/deploy.md#2-continue-after-azure-deployment)
+to load data, deploy the agents, and configure Microsoft Fabric, Microsoft 365,
+and Agent 365. Azure provisioning alone does not make the agents ready to chat.
+
 | Agent | Role | Demo |
 | --- | --- | --- |
 | Hotel Guest Services | Answers customer-service questions using Foundry IQ policy and property knowledge, Fabric IQ operational data, and Work IQ workplace context. | [Customer-service agent](demos/customer-service-agent/README.md) |
@@ -19,6 +26,25 @@ Start with the [session walkthrough](docs/demo-walkthrough.md), then read the
 [architecture](docs/architecture.md) and [setup guide](docs/setup.md).
 The projects have independent environments and deployment entry points; do not
 install both Python dependency sets in one environment.
+
+## Scenario 1: Customer-service agent
+
+Hotel Guest Services combines reservation data, property policies, and
+authorized workplace context to explain a guest's options.
+
+![Hotel Guest Services Agent architecture from the session slides.](docs/images/hotel-guest-services-slide.png)
+
+## Scenario 2: Hotel Payroll and Hotel Treasurer
+
+The two agents coordinate in the **Payroll Funding** Microsoft Teams chat,
+with separate identities and human approval for financial effects.
+
+![Two agents, shared intelligence: Hotel Payroll and Hotel Treasurer, from the session slides.](docs/images/hotel-payroll-treasurer-slide.png)
+
+The slide shows an already-funded payroll. The [walkthrough](docs/demo-walkthrough.md)
+also covers the approved transfer for a USD 15,000 shortfall.
+These slides are illustrative; see [architecture](docs/architecture.md) for
+implemented tools and workflow boundaries.
 
 ## What is included
 
@@ -46,10 +72,10 @@ Python checks, the voice frontend checks, the Agent 365 bridge tests, payroll
 tests, and the repository publication checks.
 
 Source lineage and intentional exclusions are recorded in
-[source attribution](docs/source-attribution.md). Slide-derived visuals are not
-included in this revision; the session deck remains a separate presentation.
-No live chat transcripts, tenant screenshots, or operator acceptance evidence
-are distributed with the sample.
+[source attribution](docs/source-attribution.md). The architecture images are
+the supplied session-slide visuals, with illustrative conversations. The full
+deck, live chat transcripts, tenant screenshots, and operator acceptance evidence
+are not distributed with the sample.
 
 ## Contributing
 

@@ -1,0 +1,1162 @@
+{
+  "$schema": "https://schema.management.azure.com/schemas/2019-04-01/deploymentTemplate.json#",
+  "contentVersion": "1.0.0.0",
+  "metadata": {
+    "_generator": {
+      "name": "bicep",
+      "version": "0.46.1.21595",
+      "templateHash": "14304120773939232964"
+    }
+  },
+  "parameters": {
+    "scenario": {
+      "type": "string",
+      "defaultValue": "both",
+      "allowedValues": [
+        "both",
+        "customer-service",
+        "payroll"
+      ],
+      "metadata": {
+        "description": "Deploy both scenarios, customer service only, or payroll/treasurer only."
+      }
+    },
+    "location": {
+      "type": "string",
+      "defaultValue": "[resourceGroup().location]",
+      "metadata": {
+        "description": "Region supporting the pinned models and Foundry Hosted Agents. Use the resource group region for payroll."
+      }
+    },
+    "searchLocation": {
+      "type": "string",
+      "defaultValue": "[parameters('location')]",
+      "metadata": {
+        "description": "Azure AI Search region; may differ when Search capacity is unavailable in the main region."
+      }
+    },
+    "operatorObjectId": {
+      "type": "string",
+      "defaultValue": "[deployer().objectId]",
+      "minLength": 36,
+      "maxLength": 36,
+      "metadata": {
+        "description": "Human operator object ID. Defaults to the signed-in identity starting the deployment."
+      }
+    },
+    "modelCapacity": {
+      "type": "int",
+      "defaultValue": 10,
+      "minValue": 1,
+      "metadata": {
+        "description": "GPT-5.4-mini GlobalStandard capacity. Verify model availability and subscription quota in the chosen region."
+      }
+    },
+    "embeddingCapacity": {
+      "type": "int",
+      "defaultValue": 10,
+      "minValue": 1,
+      "metadata": {
+        "description": "Text-embedding-3-small Standard capacity for customer service; unused for payroll only."
+      }
+    }
+  },
+  "variables": {
+    "includeCustomerService": "[not(equals(parameters('scenario'), 'payroll'))]",
+    "includePayroll": "[not(equals(parameters('scenario'), 'customer-service'))]",
+    "resourceToken": "[uniqueString(resourceGroup().id)]",
+    "accountName": "[format('brk301-{0}', variables('resourceToken'))]",
+    "projectName": "hotel-agents",
+    "tags": {
+      "application": "ignite26-brk301"
+    },
+    "foundryUserRole": "[subscriptionResourceId('Microsoft.Authorization/roleDefinitions', '53ca6127-db72-4b80-b1b0-d745d6d5456d')]",
+    "modelUserRole": "[subscriptionResourceId('Microsoft.Authorization/roleDefinitions', '5e0bd9bd-7b93-4f28-af87-19fc36ad61bd')]",
+    "acrPushRole": "[subscriptionResourceId('Microsoft.Authorization/roleDefinitions', '8311e382-0749-4cb8-b61a-304f252e45ec')]",
+    "acrPullRole": "[subscriptionResourceId('Microsoft.Authorization/roleDefinitions', '7f951dda-4ed3-4680-a7ca-43fe172d538d')]"
+  },
+  "resources": [
+    {
+      "condition": "[variables('includeCustomerService')]",
+      "type": "Microsoft.CognitiveServices/accounts/deployments",
+      "apiVersion": "2025-06-01",
+      "name": "[format('{0}/{1}', variables('accountName'), 'text-embedding-3-small')]",
+      "sku": {
+        "name": "Standard",
+        "capacity": "[parameters('embeddingCapacity')]"
+      },
+      "properties": {
+        "model": {
+          "format": "OpenAI",
+          "name": "text-embedding-3-small",
+          "version": "1"
+        },
+        "versionUpgradeOption": "NoAutoUpgrade"
+      },
+      "dependsOn": [
+        "[resourceId('Microsoft.Resources/deployments', 'brk301-foundry')]"
+      ]
+    },
+    {
+      "type": "Microsoft.Authorization/roleAssignments",
+      "apiVersion": "2022-04-01",
+      "scope": "[resourceId('Microsoft.CognitiveServices/accounts/projects', variables('accountName'), variables('projectName'))]",
+      "name": "[guid(resourceId('Microsoft.CognitiveServices/accounts/projects', variables('accountName'), variables('projectName')), parameters('operatorObjectId'), variables('foundryUserRole'))]",
+      "properties": {
+        "principalId": "[parameters('operatorObjectId')]",
+        "principalType": "User",
+        "roleDefinitionId": "[variables('foundryUserRole')]"
+      },
+      "dependsOn": [
+        "[resourceId('Microsoft.Resources/deployments', 'brk301-foundry')]"
+      ]
+    },
+    {
+      "type": "Microsoft.Authorization/roleAssignments",
+      "apiVersion": "2022-04-01",
+      "scope": "[resourceId('Microsoft.CognitiveServices/accounts', variables('accountName'))]",
+      "name": "[guid(resourceId('Microsoft.CognitiveServices/accounts', variables('accountName')), parameters('operatorObjectId'), variables('modelUserRole'))]",
+      "properties": {
+        "principalId": "[parameters('operatorObjectId')]",
+        "principalType": "User",
+        "roleDefinitionId": "[variables('modelUserRole')]"
+      },
+      "dependsOn": [
+        "[resourceId('Microsoft.Resources/deployments', 'brk301-foundry')]"
+      ]
+    },
+    {
+      "type": "Microsoft.ContainerRegistry/registries",
+      "apiVersion": "2023-07-01",
+      "name": "[format('brk301{0}', variables('resourceToken'))]",
+      "location": "[parameters('location')]",
+      "tags": "[variables('tags')]",
+      "sku": {
+        "name": "Basic"
+      },
+      "properties": {
+        "adminUserEnabled": false,
+        "publicNetworkAccess": "Enabled"
+      }
+    },
+    {
+      "type": "Microsoft.Authorization/roleAssignments",
+      "apiVersion": "2022-04-01",
+      "scope": "[resourceId('Microsoft.ContainerRegistry/registries', format('brk301{0}', variables('resourceToken')))]",
+      "name": "[guid(resourceId('Microsoft.ContainerRegistry/registries', format('brk301{0}', variables('resourceToken'))), parameters('operatorObjectId'), variables('acrPushRole'))]",
+      "properties": {
+        "principalId": "[parameters('operatorObjectId')]",
+        "principalType": "User",
+        "roleDefinitionId": "[variables('acrPushRole')]"
+      },
+      "dependsOn": [
+        "[resourceId('Microsoft.ContainerRegistry/registries', format('brk301{0}', variables('resourceToken')))]"
+      ]
+    },
+    {
+      "copy": {
+        "name": "registryPull",
+        "count": "[length(range(0, 2))]"
+      },
+      "type": "Microsoft.Authorization/roleAssignments",
+      "apiVersion": "2022-04-01",
+      "scope": "[resourceId('Microsoft.ContainerRegistry/registries', format('brk301{0}', variables('resourceToken')))]",
+      "name": "[guid(resourceId('Microsoft.ContainerRegistry/registries', format('brk301{0}', variables('resourceToken'))), resourceId('Microsoft.CognitiveServices/accounts', variables('accountName')), resourceId('Microsoft.CognitiveServices/accounts/projects', variables('accountName'), variables('projectName')), string(range(0, 2)[copyIndex()]), variables('acrPullRole'))]",
+      "properties": {
+        "principalId": "[createArray(reference(resourceId('Microsoft.Resources/deployments', 'brk301-foundry'), '2025-04-01').outputs.accountPrincipalId.value, reference(resourceId('Microsoft.Resources/deployments', 'brk301-foundry'), '2025-04-01').outputs.projectPrincipalId.value)[range(0, 2)[copyIndex()]]]",
+        "principalType": "ServicePrincipal",
+        "roleDefinitionId": "[variables('acrPullRole')]"
+      },
+      "dependsOn": [
+        "[resourceId('Microsoft.Resources/deployments', 'brk301-foundry')]",
+        "[resourceId('Microsoft.ContainerRegistry/registries', format('brk301{0}', variables('resourceToken')))]"
+      ]
+    },
+    {
+      "type": "Microsoft.Resources/deployments",
+      "apiVersion": "2025-04-01",
+      "name": "brk301-foundry",
+      "properties": {
+        "expressionEvaluationOptions": {
+          "scope": "inner"
+        },
+        "mode": "Incremental",
+        "parameters": {
+          "location": {
+            "value": "[parameters('location')]"
+          },
+          "accountName": {
+            "value": "[variables('accountName')]"
+          },
+          "projectName": {
+            "value": "[variables('projectName')]"
+          },
+          "modelCapacity": {
+            "value": "[parameters('modelCapacity')]"
+          },
+          "projectDescription": {
+            "value": "Shared Microsoft Foundry project for Hotel Guest Services, Hotel Payroll, and Hotel Treasurer."
+          }
+        },
+        "template": {
+          "$schema": "https://schema.management.azure.com/schemas/2019-04-01/deploymentTemplate.json#",
+          "contentVersion": "1.0.0.0",
+          "metadata": {
+            "_generator": {
+              "name": "bicep",
+              "version": "0.46.1.21595",
+              "templateHash": "10316340892885955871"
+            }
+          },
+          "parameters": {
+            "location": {
+              "type": "string",
+              "metadata": {
+                "description": "Azure region for the new Foundry account and project."
+              }
+            },
+            "accountName": {
+              "type": "string",
+              "metadata": {
+                "description": "Globally unique Foundry account name and custom subdomain."
+              }
+            },
+            "projectName": {
+              "type": "string",
+              "metadata": {
+                "description": "Name of the new Foundry project."
+              }
+            },
+            "projectDescription": {
+              "type": "string",
+              "defaultValue": "Hotel guest-services agent with Fabric, Foundry IQ, Work IQ, and Agent 365.",
+              "metadata": {
+                "description": "Display description for the new Foundry project."
+              }
+            },
+            "modelCapacity": {
+              "type": "int",
+              "minValue": 1,
+              "metadata": {
+                "description": "Model deployment capacity; verify regional subscription quota before deployment."
+              }
+            }
+          },
+          "variables": {
+            "cognitiveServicesUserRoleId": "[subscriptionResourceId('Microsoft.Authorization/roleDefinitions', 'a97b65f3-24c7-4388-baec-2e87135dc908')]"
+          },
+          "resources": [
+            {
+              "type": "Microsoft.CognitiveServices/accounts",
+              "apiVersion": "2025-06-01",
+              "name": "[parameters('accountName')]",
+              "location": "[parameters('location')]",
+              "kind": "AIServices",
+              "sku": {
+                "name": "S0"
+              },
+              "identity": {
+                "type": "SystemAssigned"
+              },
+              "properties": {
+                "allowProjectManagement": true,
+                "customSubDomainName": "[parameters('accountName')]",
+                "disableLocalAuth": true,
+                "publicNetworkAccess": "Enabled"
+              }
+            },
+            {
+              "type": "Microsoft.CognitiveServices/accounts/projects",
+              "apiVersion": "2025-06-01",
+              "name": "[format('{0}/{1}', parameters('accountName'), parameters('projectName'))]",
+              "location": "[parameters('location')]",
+              "identity": {
+                "type": "SystemAssigned"
+              },
+              "properties": {
+                "displayName": "[parameters('projectName')]",
+                "description": "[parameters('projectDescription')]"
+              },
+              "dependsOn": [
+                "[resourceId('Microsoft.CognitiveServices/accounts', parameters('accountName'))]"
+              ]
+            },
+            {
+              "type": "Microsoft.CognitiveServices/accounts/deployments",
+              "apiVersion": "2025-06-01",
+              "name": "[format('{0}/{1}', parameters('accountName'), 'gpt-5.4-mini')]",
+              "sku": {
+                "name": "GlobalStandard",
+                "capacity": "[parameters('modelCapacity')]"
+              },
+              "properties": {
+                "model": {
+                  "format": "OpenAI",
+                  "name": "gpt-5.4-mini",
+                  "version": "2026-03-17"
+                },
+                "versionUpgradeOption": "NoAutoUpgrade"
+              },
+              "dependsOn": [
+                "[resourceId('Microsoft.CognitiveServices/accounts', parameters('accountName'))]",
+                "[resourceId('Microsoft.CognitiveServices/accounts/projects', parameters('accountName'), parameters('projectName'))]"
+              ]
+            },
+            {
+              "type": "Microsoft.Authorization/roleAssignments",
+              "apiVersion": "2022-04-01",
+              "scope": "[resourceId('Microsoft.CognitiveServices/accounts', parameters('accountName'))]",
+              "name": "[guid(resourceId('Microsoft.CognitiveServices/accounts', parameters('accountName')), resourceId('Microsoft.CognitiveServices/accounts/projects', parameters('accountName'), parameters('projectName')), variables('cognitiveServicesUserRoleId'))]",
+              "properties": {
+                "principalId": "[reference(resourceId('Microsoft.CognitiveServices/accounts/projects', parameters('accountName'), parameters('projectName')), '2025-06-01', 'full').identity.principalId]",
+                "principalType": "ServicePrincipal",
+                "roleDefinitionId": "[variables('cognitiveServicesUserRoleId')]"
+              },
+              "dependsOn": [
+                "[resourceId('Microsoft.CognitiveServices/accounts', parameters('accountName'))]",
+                "[resourceId('Microsoft.CognitiveServices/accounts/projects', parameters('accountName'), parameters('projectName'))]"
+              ]
+            }
+          ],
+          "outputs": {
+            "accountId": {
+              "type": "string",
+              "value": "[resourceId('Microsoft.CognitiveServices/accounts', parameters('accountName'))]"
+            },
+            "accountPrincipalId": {
+              "type": "string",
+              "value": "[reference(resourceId('Microsoft.CognitiveServices/accounts', parameters('accountName')), '2025-06-01', 'full').identity.principalId]"
+            },
+            "projectId": {
+              "type": "string",
+              "value": "[resourceId('Microsoft.CognitiveServices/accounts/projects', parameters('accountName'), parameters('projectName'))]"
+            },
+            "projectPrincipalId": {
+              "type": "string",
+              "value": "[reference(resourceId('Microsoft.CognitiveServices/accounts/projects', parameters('accountName'), parameters('projectName')), '2025-06-01', 'full').identity.principalId]"
+            },
+            "projectEndpoint": {
+              "type": "string",
+              "value": "[reference(resourceId('Microsoft.CognitiveServices/accounts/projects', parameters('accountName'), parameters('projectName')), '2025-06-01').endpoints['AI Foundry API']]"
+            },
+            "modelEndpoint": {
+              "type": "string",
+              "value": "[reference(resourceId('Microsoft.CognitiveServices/accounts', parameters('accountName')), '2025-06-01').endpoints['OpenAI Language Model Instance API']]"
+            },
+            "modelDeploymentName": {
+              "type": "string",
+              "value": "gpt-5.4-mini"
+            }
+          }
+        }
+      }
+    },
+    {
+      "condition": "[variables('includeCustomerService')]",
+      "type": "Microsoft.Resources/deployments",
+      "apiVersion": "2025-04-01",
+      "name": "brk301-customer-service",
+      "properties": {
+        "expressionEvaluationOptions": {
+          "scope": "inner"
+        },
+        "mode": "Incremental",
+        "parameters": {
+          "location": {
+            "value": "[parameters('location')]"
+          },
+          "searchLocation": {
+            "value": "[parameters('searchLocation')]"
+          },
+          "foundryAccountName": {
+            "value": "[variables('accountName')]"
+          },
+          "foundryProjectName": {
+            "value": "[variables('projectName')]"
+          },
+          "foundryProjectPrincipalId": {
+            "value": "[reference(resourceId('Microsoft.Resources/deployments', 'brk301-foundry'), '2025-04-01').outputs.projectPrincipalId.value]"
+          },
+          "deploymentPrincipalId": {
+            "value": "[parameters('operatorObjectId')]"
+          },
+          "searchServiceName": {
+            "value": "[format('brk301-guest-{0}', variables('resourceToken'))]"
+          },
+          "storageAccountName": {
+            "value": "[format('stbrkguest{0}', variables('resourceToken'))]"
+          },
+          "tags": {
+            "value": "[variables('tags')]"
+          }
+        },
+        "template": {
+          "$schema": "https://schema.management.azure.com/schemas/2019-04-01/deploymentTemplate.json#",
+          "contentVersion": "1.0.0.0",
+          "metadata": {
+            "_generator": {
+              "name": "bicep",
+              "version": "0.46.1.21595",
+              "templateHash": "15337113090430689018"
+            }
+          },
+          "parameters": {
+            "location": {
+              "type": "string",
+              "defaultValue": "[resourceGroup().location]",
+              "metadata": {
+                "description": "Region for the approved dedicated Search and document archive."
+              }
+            },
+            "searchLocation": {
+              "type": "string",
+              "defaultValue": "[parameters('location')]",
+              "metadata": {
+                "description": "Search-only regional override if new service capacity is unavailable."
+              }
+            },
+            "foundryAccountName": {
+              "type": "string",
+              "metadata": {
+                "description": "Existing Foundry account; this deployment never creates it."
+              }
+            },
+            "foundryProjectName": {
+              "type": "string",
+              "metadata": {
+                "description": "Existing Foundry project; this deployment never creates it."
+              }
+            },
+            "foundryProjectPrincipalId": {
+              "type": "string",
+              "metadata": {
+                "description": "Object ID of the verified Foundry project managed identity."
+              }
+            },
+            "deploymentPrincipalId": {
+              "type": "string",
+              "metadata": {
+                "description": "Object ID of the setup/content-loading principal."
+              }
+            },
+            "searchServiceName": {
+              "type": "string",
+              "defaultValue": "[format('hotel-iq-{0}', uniqueString(resourceGroup().id))]",
+              "metadata": {
+                "description": "Globally unique Azure AI Search service name."
+              }
+            },
+            "storageAccountName": {
+              "type": "string",
+              "defaultValue": "[format('sthoteliq{0}', uniqueString(resourceGroup().id))]",
+              "metadata": {
+                "description": "Globally unique private document archive account name."
+              }
+            },
+            "deployArchive": {
+              "type": "bool",
+              "defaultValue": true,
+              "metadata": {
+                "description": "Create the archive on the first deployment; false preserves an existing archive."
+              }
+            },
+            "searchConnectionName": {
+              "type": "string",
+              "defaultValue": "hotel-search-connection",
+              "metadata": {
+                "description": "AAD project Search connection name."
+              }
+            },
+            "tags": {
+              "type": "object",
+              "defaultValue": {}
+            },
+            "archiveTags": {
+              "type": "object",
+              "defaultValue": {},
+              "metadata": {
+                "description": "Archive-specific tags; include existing tags when redeploying the account."
+              }
+            },
+            "demoArchivePolicyException": {
+              "type": "bool",
+              "defaultValue": false,
+              "metadata": {
+                "description": "Explicit demo-only storage governance opt-in, never applied to other resources."
+              }
+            }
+          },
+          "variables": {
+            "searchServiceContributorRoleId": "[subscriptionResourceId('Microsoft.Authorization/roleDefinitions', '7ca78c08-252a-4471-8644-bb5ff32d4ba0')]",
+            "searchIndexDataContributorRoleId": "[subscriptionResourceId('Microsoft.Authorization/roleDefinitions', '8ebe5a00-799e-43f5-93ac-243d3dce84a7')]",
+            "searchIndexDataReaderRoleId": "[subscriptionResourceId('Microsoft.Authorization/roleDefinitions', '1407120a-92aa-4202-b7e9-c0e197c71c8f')]",
+            "storageBlobDataContributorRoleId": "[subscriptionResourceId('Microsoft.Authorization/roleDefinitions', 'ba92f5b4-2d11-453d-a403-e96b0029c9fe')]",
+            "cognitiveServicesUserRoleId": "[subscriptionResourceId('Microsoft.Authorization/roleDefinitions', 'a97b65f3-24c7-4388-baec-2e87135dc908')]"
+          },
+          "resources": [
+            {
+              "type": "Microsoft.Search/searchServices",
+              "apiVersion": "2025-05-01",
+              "name": "[parameters('searchServiceName')]",
+              "location": "[parameters('searchLocation')]",
+              "tags": "[parameters('tags')]",
+              "identity": {
+                "type": "SystemAssigned"
+              },
+              "sku": {
+                "name": "standard"
+              },
+              "properties": {
+                "disableLocalAuth": true,
+                "hostingMode": "Default",
+                "partitionCount": 1,
+                "publicNetworkAccess": "Enabled",
+                "replicaCount": 1,
+                "semanticSearch": "standard"
+              }
+            },
+            {
+              "condition": "[parameters('deployArchive')]",
+              "type": "Microsoft.Storage/storageAccounts",
+              "apiVersion": "2025-06-01",
+              "name": "[parameters('storageAccountName')]",
+              "location": "[parameters('location')]",
+              "tags": "[union(parameters('tags'), parameters('archiveTags'), if(parameters('demoArchivePolicyException'), createObject('SecurityControl', 'Ignore'), createObject()))]",
+              "kind": "StorageV2",
+              "sku": {
+                "name": "Standard_LRS"
+              },
+              "properties": {
+                "accessTier": "Hot",
+                "allowBlobPublicAccess": false,
+                "allowSharedKeyAccess": false,
+                "defaultToOAuthAuthentication": true,
+                "minimumTlsVersion": "TLS1_2",
+                "publicNetworkAccess": "Enabled",
+                "supportsHttpsTrafficOnly": true
+              }
+            },
+            {
+              "condition": "[parameters('deployArchive')]",
+              "type": "Microsoft.Storage/storageAccounts/blobServices",
+              "apiVersion": "2025-06-01",
+              "name": "[format('{0}/{1}', parameters('storageAccountName'), 'default')]",
+              "properties": {
+                "containerDeleteRetentionPolicy": {
+                  "enabled": true,
+                  "days": 7
+                },
+                "deleteRetentionPolicy": {
+                  "enabled": true,
+                  "days": 7
+                }
+              },
+              "dependsOn": [
+                "[resourceId('Microsoft.Storage/storageAccounts', parameters('storageAccountName'))]"
+              ]
+            },
+            {
+              "condition": "[parameters('deployArchive')]",
+              "type": "Microsoft.Storage/storageAccounts/blobServices/containers",
+              "apiVersion": "2025-06-01",
+              "name": "[format('{0}/{1}/{2}', parameters('storageAccountName'), 'default', 'hotel-docs')]",
+              "properties": {
+                "publicAccess": "None"
+              },
+              "dependsOn": [
+                "[resourceId('Microsoft.Storage/storageAccounts/blobServices', parameters('storageAccountName'), 'default')]"
+              ]
+            },
+            {
+              "type": "Microsoft.Authorization/roleAssignments",
+              "apiVersion": "2022-04-01",
+              "scope": "[resourceId('Microsoft.Search/searchServices', parameters('searchServiceName'))]",
+              "name": "[guid(resourceId('Microsoft.Search/searchServices', parameters('searchServiceName')), parameters('foundryProjectPrincipalId'), variables('searchIndexDataReaderRoleId'))]",
+              "properties": {
+                "principalId": "[parameters('foundryProjectPrincipalId')]",
+                "principalType": "ServicePrincipal",
+                "roleDefinitionId": "[variables('searchIndexDataReaderRoleId')]"
+              },
+              "dependsOn": [
+                "[resourceId('Microsoft.Search/searchServices', parameters('searchServiceName'))]"
+              ]
+            },
+            {
+              "type": "Microsoft.Authorization/roleAssignments",
+              "apiVersion": "2022-04-01",
+              "scope": "[resourceId('Microsoft.Search/searchServices', parameters('searchServiceName'))]",
+              "name": "[guid(resourceId('Microsoft.Search/searchServices', parameters('searchServiceName')), parameters('deploymentPrincipalId'), variables('searchServiceContributorRoleId'))]",
+              "properties": {
+                "principalId": "[parameters('deploymentPrincipalId')]",
+                "roleDefinitionId": "[variables('searchServiceContributorRoleId')]"
+              },
+              "dependsOn": [
+                "[resourceId('Microsoft.Search/searchServices', parameters('searchServiceName'))]"
+              ]
+            },
+            {
+              "type": "Microsoft.Authorization/roleAssignments",
+              "apiVersion": "2022-04-01",
+              "scope": "[resourceId('Microsoft.Search/searchServices', parameters('searchServiceName'))]",
+              "name": "[guid(resourceId('Microsoft.Search/searchServices', parameters('searchServiceName')), parameters('deploymentPrincipalId'), variables('searchIndexDataContributorRoleId'))]",
+              "properties": {
+                "principalId": "[parameters('deploymentPrincipalId')]",
+                "roleDefinitionId": "[variables('searchIndexDataContributorRoleId')]"
+              },
+              "dependsOn": [
+                "[resourceId('Microsoft.Search/searchServices', parameters('searchServiceName'))]"
+              ]
+            },
+            {
+              "condition": "[parameters('deployArchive')]",
+              "type": "Microsoft.Authorization/roleAssignments",
+              "apiVersion": "2022-04-01",
+              "name": "[guid(resourceId('Microsoft.Storage/storageAccounts/blobServices/containers', parameters('storageAccountName'), 'default', 'hotel-docs'), parameters('deploymentPrincipalId'), variables('storageBlobDataContributorRoleId'))]",
+              "properties": {
+                "principalId": "[parameters('deploymentPrincipalId')]",
+                "roleDefinitionId": "[variables('storageBlobDataContributorRoleId')]"
+              },
+              "dependsOn": [
+                "[resourceId('Microsoft.Storage/storageAccounts/blobServices/containers', parameters('storageAccountName'), 'default', 'hotel-docs')]"
+              ]
+            },
+            {
+              "type": "Microsoft.Authorization/roleAssignments",
+              "apiVersion": "2022-04-01",
+              "scope": "[resourceId('Microsoft.CognitiveServices/accounts', parameters('foundryAccountName'))]",
+              "name": "[guid(resourceId('Microsoft.CognitiveServices/accounts', parameters('foundryAccountName')), parameters('searchServiceName'), variables('cognitiveServicesUserRoleId'))]",
+              "properties": {
+                "principalId": "[reference(resourceId('Microsoft.Search/searchServices', parameters('searchServiceName')), '2025-05-01', 'full').identity.principalId]",
+                "principalType": "ServicePrincipal",
+                "roleDefinitionId": "[variables('cognitiveServicesUserRoleId')]"
+              },
+              "dependsOn": [
+                "[resourceId('Microsoft.Search/searchServices', parameters('searchServiceName'))]"
+              ]
+            },
+            {
+              "type": "Microsoft.Resources/deployments",
+              "apiVersion": "2025-04-01",
+              "name": "hotel-iq-search-connection",
+              "properties": {
+                "expressionEvaluationOptions": {
+                  "scope": "inner"
+                },
+                "mode": "Incremental",
+                "parameters": {
+                  "foundryAccountName": {
+                    "value": "[parameters('foundryAccountName')]"
+                  },
+                  "foundryProjectName": {
+                    "value": "[parameters('foundryProjectName')]"
+                  },
+                  "searchConnectionName": {
+                    "value": "[parameters('searchConnectionName')]"
+                  },
+                  "searchServiceEndpoint": {
+                    "value": "[format('https://{0}.search.windows.net', parameters('searchServiceName'))]"
+                  },
+                  "searchServiceId": {
+                    "value": "[resourceId('Microsoft.Search/searchServices', parameters('searchServiceName'))]"
+                  },
+                  "searchServiceLocation": {
+                    "value": "[parameters('searchLocation')]"
+                  }
+                },
+                "template": {
+                  "$schema": "https://schema.management.azure.com/schemas/2019-04-01/deploymentTemplate.json#",
+                  "contentVersion": "1.0.0.0",
+                  "metadata": {
+                    "_generator": {
+                      "name": "bicep",
+                      "version": "0.46.1.21595",
+                      "templateHash": "8475259746687888392"
+                    }
+                  },
+                  "parameters": {
+                    "foundryAccountName": {
+                      "type": "string",
+                      "metadata": {
+                        "description": "Name of the existing Foundry account."
+                      }
+                    },
+                    "foundryProjectName": {
+                      "type": "string",
+                      "metadata": {
+                        "description": "Name of the existing Foundry project."
+                      }
+                    },
+                    "searchConnectionName": {
+                      "type": "string",
+                      "metadata": {
+                        "description": "Name of the Foundry project connection."
+                      }
+                    },
+                    "searchServiceEndpoint": {
+                      "type": "string",
+                      "metadata": {
+                        "description": "Azure AI Search endpoint."
+                      }
+                    },
+                    "searchServiceId": {
+                      "type": "string",
+                      "metadata": {
+                        "description": "Azure AI Search resource ID."
+                      }
+                    },
+                    "searchServiceLocation": {
+                      "type": "string",
+                      "metadata": {
+                        "description": "Azure region containing the Search service."
+                      }
+                    }
+                  },
+                  "resources": [
+                    {
+                      "type": "Microsoft.CognitiveServices/accounts/projects/connections",
+                      "apiVersion": "2025-06-01",
+                      "name": "[format('{0}/{1}/{2}', parameters('foundryAccountName'), parameters('foundryProjectName'), parameters('searchConnectionName'))]",
+                      "properties": {
+                        "authType": "AAD",
+                        "category": "CognitiveSearch",
+                        "isSharedToAll": false,
+                        "metadata": {
+                          "ApiType": "Azure",
+                          "ResourceId": "[parameters('searchServiceId')]",
+                          "location": "[parameters('searchServiceLocation')]"
+                        },
+                        "target": "[parameters('searchServiceEndpoint')]",
+                        "useWorkspaceManagedIdentity": true
+                      }
+                    }
+                  ],
+                  "outputs": {
+                    "searchConnectionName": {
+                      "type": "string",
+                      "value": "[parameters('searchConnectionName')]"
+                    }
+                  }
+                }
+              },
+              "dependsOn": [
+                "[resourceId('Microsoft.Search/searchServices', parameters('searchServiceName'))]"
+              ]
+            }
+          ],
+          "outputs": {
+            "searchServiceEndpoint": {
+              "type": "string",
+              "value": "[format('https://{0}.search.windows.net', parameters('searchServiceName'))]"
+            },
+            "searchServiceId": {
+              "type": "string",
+              "value": "[resourceId('Microsoft.Search/searchServices', parameters('searchServiceName'))]"
+            },
+            "searchServicePrincipalId": {
+              "type": "string",
+              "value": "[reference(resourceId('Microsoft.Search/searchServices', parameters('searchServiceName')), '2025-05-01', 'full').identity.principalId]"
+            },
+            "storageAccountName": {
+              "type": "string",
+              "value": "[parameters('storageAccountName')]"
+            },
+            "storageAccountUrl": {
+              "type": "string",
+              "value": "[if(parameters('deployArchive'), reference(resourceId('Microsoft.Storage/storageAccounts', parameters('storageAccountName')), '2025-06-01').primaryEndpoints.blob, reference(resourceId('Microsoft.Storage/storageAccounts', parameters('storageAccountName')), '2025-06-01').primaryEndpoints.blob)]"
+            },
+            "documentContainerName": {
+              "type": "string",
+              "value": "hotel-docs"
+            },
+            "searchConnectionName": {
+              "type": "string",
+              "value": "[reference(resourceId('Microsoft.Resources/deployments', 'hotel-iq-search-connection'), '2025-04-01').outputs.searchConnectionName.value]"
+            }
+          }
+        }
+      },
+      "dependsOn": [
+        "[resourceId('Microsoft.Resources/deployments', 'brk301-foundry')]"
+      ]
+    },
+    {
+      "condition": "[variables('includePayroll')]",
+      "type": "Microsoft.Resources/deployments",
+      "apiVersion": "2025-04-01",
+      "name": "brk301-payroll-storage",
+      "properties": {
+        "expressionEvaluationOptions": {
+          "scope": "inner"
+        },
+        "mode": "Incremental",
+        "parameters": {
+          "location": {
+            "value": "[parameters('location')]"
+          },
+          "operatorObjectId": {
+            "value": "[parameters('operatorObjectId')]"
+          }
+        },
+        "template": {
+          "$schema": "https://schema.management.azure.com/schemas/2019-04-01/deploymentTemplate.json#",
+          "contentVersion": "1.0.0.0",
+          "metadata": {
+            "_generator": {
+              "name": "bicep",
+              "version": "0.46.1.21595",
+              "templateHash": "1865191705190945287"
+            }
+          },
+          "parameters": {
+            "operatorObjectId": {
+              "type": "string",
+              "metadata": {
+                "description": "Object ID of the authenticated operator, only for bootstrap and validation."
+              }
+            },
+            "location": {
+              "type": "string",
+              "defaultValue": "[resourceGroup().location]"
+            }
+          },
+          "variables": {
+            "containerNames": [
+              "finance-ledger",
+              "hotel-tasks",
+              "bank-tasks",
+              "validation",
+              "runtime-bindings"
+            ],
+            "contributorRoleId": "[subscriptionResourceId('Microsoft.Authorization/roleDefinitions', 'ba92f5b4-2d11-453d-a403-e96b0029c9fe')]"
+          },
+          "resources": [
+            {
+              "type": "Microsoft.Storage/storageAccounts",
+              "apiVersion": "2023-05-01",
+              "name": "[format('hbfin{0}', uniqueString(resourceGroup().id, 'finance-autopilots'))]",
+              "location": "[parameters('location')]",
+              "kind": "StorageV2",
+              "sku": {
+                "name": "Standard_LRS"
+              },
+              "tags": {
+                "application": "hotel-bank-finance-autopilots",
+                "dataClassification": "controlled-project"
+              },
+              "properties": {
+                "allowSharedKeyAccess": false,
+                "allowBlobPublicAccess": false,
+                "defaultToOAuthAuthentication": true,
+                "supportsHttpsTrafficOnly": true,
+                "minimumTlsVersion": "TLS1_2",
+                "publicNetworkAccess": "Enabled",
+                "encryption": {
+                  "services": {
+                    "blob": {
+                      "enabled": true,
+                      "keyType": "Account"
+                    }
+                  },
+                  "keySource": "Microsoft.Storage"
+                }
+              }
+            },
+            {
+              "type": "Microsoft.Storage/storageAccounts/blobServices",
+              "apiVersion": "2023-05-01",
+              "name": "[format('{0}/{1}', format('hbfin{0}', uniqueString(resourceGroup().id, 'finance-autopilots')), 'default')]",
+              "properties": {
+                "isVersioningEnabled": true,
+                "deleteRetentionPolicy": {
+                  "enabled": true,
+                  "days": 7
+                },
+                "containerDeleteRetentionPolicy": {
+                  "enabled": true,
+                  "days": 7
+                }
+              },
+              "dependsOn": [
+                "[resourceId('Microsoft.Storage/storageAccounts', format('hbfin{0}', uniqueString(resourceGroup().id, 'finance-autopilots')))]"
+              ]
+            },
+            {
+              "copy": {
+                "name": "containers",
+                "count": "[length(variables('containerNames'))]"
+              },
+              "type": "Microsoft.Storage/storageAccounts/blobServices/containers",
+              "apiVersion": "2023-05-01",
+              "name": "[format('{0}/{1}/{2}', format('hbfin{0}', uniqueString(resourceGroup().id, 'finance-autopilots')), 'default', variables('containerNames')[copyIndex()])]",
+              "properties": {
+                "publicAccess": "None"
+              },
+              "dependsOn": [
+                "[resourceId('Microsoft.Storage/storageAccounts/blobServices', format('hbfin{0}', uniqueString(resourceGroup().id, 'finance-autopilots')), 'default')]"
+              ]
+            },
+            {
+              "copy": {
+                "name": "bootstrapRoles",
+                "count": "[length(variables('containerNames'))]"
+              },
+              "type": "Microsoft.Authorization/roleAssignments",
+              "apiVersion": "2022-04-01",
+              "scope": "[resourceId('Microsoft.Storage/storageAccounts/blobServices/containers', format('hbfin{0}', uniqueString(resourceGroup().id, 'finance-autopilots')), 'default', variables('containerNames')[copyIndex()])]",
+              "name": "[guid(resourceId('Microsoft.Storage/storageAccounts/blobServices/containers', format('hbfin{0}', uniqueString(resourceGroup().id, 'finance-autopilots')), 'default', variables('containerNames')[copyIndex()]), parameters('operatorObjectId'), variables('contributorRoleId'))]",
+              "properties": {
+                "roleDefinitionId": "[variables('contributorRoleId')]",
+                "principalId": "[parameters('operatorObjectId')]",
+                "principalType": "User"
+              },
+              "dependsOn": [
+                "[resourceId('Microsoft.Storage/storageAccounts/blobServices/containers', format('hbfin{0}', uniqueString(resourceGroup().id, 'finance-autopilots')), 'default', variables('containerNames')[copyIndex()])]",
+                "[resourceId('Microsoft.Storage/storageAccounts/blobServices/containers', format('hbfin{0}', uniqueString(resourceGroup().id, 'finance-autopilots')), 'default', variables('containerNames')[copyIndex()])]"
+              ]
+            }
+          ],
+          "outputs": {
+            "storageAccountName": {
+              "type": "string",
+              "value": "[format('hbfin{0}', uniqueString(resourceGroup().id, 'finance-autopilots'))]"
+            },
+            "storageAccountId": {
+              "type": "string",
+              "value": "[resourceId('Microsoft.Storage/storageAccounts', format('hbfin{0}', uniqueString(resourceGroup().id, 'finance-autopilots')))]"
+            },
+            "blobEndpoint": {
+              "type": "string",
+              "value": "[reference(resourceId('Microsoft.Storage/storageAccounts', format('hbfin{0}', uniqueString(resourceGroup().id, 'finance-autopilots'))), '2023-05-01').primaryEndpoints.blob]"
+            },
+            "ledgerContainerId": {
+              "type": "string",
+              "value": "[resourceId('Microsoft.Storage/storageAccounts/blobServices/containers', format('hbfin{0}', uniqueString(resourceGroup().id, 'finance-autopilots')), 'default', variables('containerNames')[0])]"
+            },
+            "ledgerBlobUrl": {
+              "type": "string",
+              "value": "[format('{0}finance-ledger/state.json', reference(resourceId('Microsoft.Storage/storageAccounts', format('hbfin{0}', uniqueString(resourceGroup().id, 'finance-autopilots'))), '2023-05-01').primaryEndpoints.blob)]"
+            },
+            "hotelTasksContainerId": {
+              "type": "string",
+              "value": "[resourceId('Microsoft.Storage/storageAccounts/blobServices/containers', format('hbfin{0}', uniqueString(resourceGroup().id, 'finance-autopilots')), 'default', variables('containerNames')[1])]"
+            },
+            "bankTasksContainerId": {
+              "type": "string",
+              "value": "[resourceId('Microsoft.Storage/storageAccounts/blobServices/containers', format('hbfin{0}', uniqueString(resourceGroup().id, 'finance-autopilots')), 'default', variables('containerNames')[2])]"
+            },
+            "validationContainerId": {
+              "type": "string",
+              "value": "[resourceId('Microsoft.Storage/storageAccounts/blobServices/containers', format('hbfin{0}', uniqueString(resourceGroup().id, 'finance-autopilots')), 'default', variables('containerNames')[3])]"
+            },
+            "runtimeBindingsContainerId": {
+              "type": "string",
+              "value": "[resourceId('Microsoft.Storage/storageAccounts/blobServices/containers', format('hbfin{0}', uniqueString(resourceGroup().id, 'finance-autopilots')), 'default', variables('containerNames')[4])]"
+            },
+            "runtimeBindingsBlobUrl": {
+              "type": "string",
+              "value": "[format('{0}runtime-bindings/instances.json', reference(resourceId('Microsoft.Storage/storageAccounts', format('hbfin{0}', uniqueString(resourceGroup().id, 'finance-autopilots'))), '2023-05-01').primaryEndpoints.blob)]"
+            }
+          }
+        }
+      }
+    },
+    {
+      "condition": "[variables('includePayroll')]",
+      "type": "Microsoft.Resources/deployments",
+      "apiVersion": "2025-04-01",
+      "name": "brk301-payroll-search",
+      "properties": {
+        "expressionEvaluationOptions": {
+          "scope": "inner"
+        },
+        "mode": "Incremental",
+        "parameters": {
+          "location": {
+            "value": "[parameters('searchLocation')]"
+          },
+          "operatorObjectId": {
+            "value": "[parameters('operatorObjectId')]"
+          },
+          "modelAccountName": {
+            "value": "[variables('accountName')]"
+          }
+        },
+        "template": {
+          "$schema": "https://schema.management.azure.com/schemas/2019-04-01/deploymentTemplate.json#",
+          "contentVersion": "1.0.0.0",
+          "metadata": {
+            "_generator": {
+              "name": "bicep",
+              "version": "0.46.1.21595",
+              "templateHash": "1492837686785505677"
+            }
+          },
+          "parameters": {
+            "operatorObjectId": {
+              "type": "string"
+            },
+            "modelAccountName": {
+              "type": "string"
+            },
+            "location": {
+              "type": "string",
+              "defaultValue": "[resourceGroup().location]"
+            }
+          },
+          "variables": {
+            "serviceContributor": "[subscriptionResourceId('Microsoft.Authorization/roleDefinitions', '7ca78c08-252a-4471-8644-bb5ff32d4ba0')]",
+            "indexContributor": "[subscriptionResourceId('Microsoft.Authorization/roleDefinitions', '8ebe5a00-799e-43f5-93ac-243d3dce84a7')]",
+            "modelUser": "[subscriptionResourceId('Microsoft.Authorization/roleDefinitions', '5e0bd9bd-7b93-4f28-af87-19fc36ad61bd')]"
+          },
+          "resources": [
+            {
+              "type": "Microsoft.Search/searchServices",
+              "apiVersion": "2025-05-01",
+              "name": "[format('hbf-iq-{0}', uniqueString(resourceGroup().id, 'finance-policies'))]",
+              "location": "[parameters('location')]",
+              "sku": {
+                "name": "basic"
+              },
+              "identity": {
+                "type": "SystemAssigned"
+              },
+              "tags": {
+                "application": "hotel-bank-finance-autopilots",
+                "dataClassification": "controlled-project"
+              },
+              "properties": {
+                "replicaCount": 1,
+                "partitionCount": 1,
+                "hostingMode": "Default",
+                "disableLocalAuth": true,
+                "semanticSearch": "standard",
+                "publicNetworkAccess": "enabled"
+              }
+            },
+            {
+              "type": "Microsoft.Authorization/roleAssignments",
+              "apiVersion": "2022-04-01",
+              "scope": "[resourceId('Microsoft.Search/searchServices', format('hbf-iq-{0}', uniqueString(resourceGroup().id, 'finance-policies')))]",
+              "name": "[guid(resourceId('Microsoft.Search/searchServices', format('hbf-iq-{0}', uniqueString(resourceGroup().id, 'finance-policies'))), parameters('operatorObjectId'), variables('serviceContributor'))]",
+              "properties": {
+                "roleDefinitionId": "[variables('serviceContributor')]",
+                "principalId": "[parameters('operatorObjectId')]",
+                "principalType": "User"
+              },
+              "dependsOn": [
+                "[resourceId('Microsoft.Search/searchServices', format('hbf-iq-{0}', uniqueString(resourceGroup().id, 'finance-policies')))]"
+              ]
+            },
+            {
+              "type": "Microsoft.Authorization/roleAssignments",
+              "apiVersion": "2022-04-01",
+              "scope": "[resourceId('Microsoft.Search/searchServices', format('hbf-iq-{0}', uniqueString(resourceGroup().id, 'finance-policies')))]",
+              "name": "[guid(resourceId('Microsoft.Search/searchServices', format('hbf-iq-{0}', uniqueString(resourceGroup().id, 'finance-policies'))), parameters('operatorObjectId'), variables('indexContributor'))]",
+              "properties": {
+                "roleDefinitionId": "[variables('indexContributor')]",
+                "principalId": "[parameters('operatorObjectId')]",
+                "principalType": "User"
+              },
+              "dependsOn": [
+                "[resourceId('Microsoft.Search/searchServices', format('hbf-iq-{0}', uniqueString(resourceGroup().id, 'finance-policies')))]"
+              ]
+            },
+            {
+              "type": "Microsoft.Authorization/roleAssignments",
+              "apiVersion": "2022-04-01",
+              "scope": "[resourceId('Microsoft.CognitiveServices/accounts', parameters('modelAccountName'))]",
+              "name": "[guid(resourceId('Microsoft.CognitiveServices/accounts', parameters('modelAccountName')), resourceId('Microsoft.Search/searchServices', format('hbf-iq-{0}', uniqueString(resourceGroup().id, 'finance-policies'))), variables('modelUser'))]",
+              "properties": {
+                "roleDefinitionId": "[variables('modelUser')]",
+                "principalId": "[reference(resourceId('Microsoft.Search/searchServices', format('hbf-iq-{0}', uniqueString(resourceGroup().id, 'finance-policies'))), '2025-05-01', 'full').identity.principalId]",
+                "principalType": "ServicePrincipal"
+              },
+              "dependsOn": [
+                "[resourceId('Microsoft.Search/searchServices', format('hbf-iq-{0}', uniqueString(resourceGroup().id, 'finance-policies')))]"
+              ]
+            }
+          ],
+          "outputs": {
+            "name": {
+              "type": "string",
+              "value": "[format('hbf-iq-{0}', uniqueString(resourceGroup().id, 'finance-policies'))]"
+            },
+            "id": {
+              "type": "string",
+              "value": "[resourceId('Microsoft.Search/searchServices', format('hbf-iq-{0}', uniqueString(resourceGroup().id, 'finance-policies')))]"
+            },
+            "endpoint": {
+              "type": "string",
+              "value": "[format('https://{0}.search.windows.net', format('hbf-iq-{0}', uniqueString(resourceGroup().id, 'finance-policies')))]"
+            }
+          }
+        }
+      },
+      "dependsOn": [
+        "[resourceId('Microsoft.Resources/deployments', 'brk301-foundry')]"
+      ]
+    }
+  ],
+  "outputs": {
+    "NEXT_STEPS_URL": {
+      "type": "string",
+      "value": "https://github.com/microsoft/ignite26-brk301/blob/main/docs/deploy.md#2-continue-after-azure-deployment"
+    },
+    "AZURE_TENANT_ID": {
+      "type": "string",
+      "value": "[tenant().tenantId]"
+    },
+    "AZURE_SUBSCRIPTION_ID": {
+      "type": "string",
+      "value": "[subscription().subscriptionId]"
+    },
+    "AZURE_RESOURCE_GROUP": {
+      "type": "string",
+      "value": "[resourceGroup().name]"
+    },
+    "AZURE_LOCATION": {
+      "type": "string",
+      "value": "[parameters('location')]"
+    },
+    "AZURE_AI_ACCOUNT_NAME": {
+      "type": "string",
+      "value": "[variables('accountName')]"
+    },
+    "AZURE_AI_PROJECT_NAME": {
+      "type": "string",
+      "value": "[variables('projectName')]"
+    },
+    "AZURE_AI_PROJECT_ID": {
+      "type": "string",
+      "value": "[reference(resourceId('Microsoft.Resources/deployments', 'brk301-foundry'), '2025-04-01').outputs.projectId.value]"
+    },
+    "AZURE_AI_PROJECT_ENDPOINT": {
+      "type": "string",
+      "value": "[reference(resourceId('Microsoft.Resources/deployments', 'brk301-foundry'), '2025-04-01').outputs.projectEndpoint.value]"
+    },
+    "AZURE_AI_MODEL_DEPLOYMENT_NAME": {
+      "type": "string",
+      "value": "[reference(resourceId('Microsoft.Resources/deployments', 'brk301-foundry'), '2025-04-01').outputs.modelDeploymentName.value]"
+    },
+    "AZURE_OPENAI_ENDPOINT": {
+      "type": "string",
+      "value": "[reference(resourceId('Microsoft.Resources/deployments', 'brk301-foundry'), '2025-04-01').outputs.modelEndpoint.value]"
+    },
+    "AZURE_CONTAINER_REGISTRY_NAME": {
+      "type": "string",
+      "value": "[format('brk301{0}', variables('resourceToken'))]"
+    },
+    "AZURE_CONTAINER_REGISTRY_ENDPOINT": {
+      "type": "string",
+      "value": "[reference(resourceId('Microsoft.ContainerRegistry/registries', format('brk301{0}', variables('resourceToken'))), '2023-07-01').loginServer]"
+    },
+    "customerService": {
+      "type": "object",
+      "value": "[if(variables('includeCustomerService'), createObject('AZURE_SEARCH_ENDPOINT', reference(resourceId('Microsoft.Resources/deployments', 'brk301-customer-service'), '2025-04-01').outputs.searchServiceEndpoint.value, 'AZURE_STORAGE_ACCOUNT_URL', reference(resourceId('Microsoft.Resources/deployments', 'brk301-customer-service'), '2025-04-01').outputs.storageAccountUrl.value, 'FOUNDRY_IQ_BLOB_CONTAINER', reference(resourceId('Microsoft.Resources/deployments', 'brk301-customer-service'), '2025-04-01').outputs.documentContainerName.value, 'FOUNDRY_IQ_KNOWLEDGE_BASE_NAME', 'hotel-foundryiq'), createObject())]"
+    },
+    "payroll": {
+      "type": "object",
+      "value": "[if(variables('includePayroll'), createObject('config', createObject('tenantId', tenant().tenantId, 'subscriptionId', subscription().subscriptionId, 'resourceGroup', resourceGroup().name, 'location', parameters('location'), 'searchLocation', parameters('searchLocation'), 'foundry', createObject('account', variables('accountName'), 'project', variables('projectName'), 'modelDeployment', reference(resourceId('Microsoft.Resources/deployments', 'brk301-foundry'), '2025-04-01').outputs.modelDeploymentName.value)), 'storageAccountName', reference(resourceId('Microsoft.Resources/deployments', 'brk301-payroll-storage'), '2025-04-01').outputs.storageAccountName.value, 'runtimeBindingsBlobUrl', reference(resourceId('Microsoft.Resources/deployments', 'brk301-payroll-storage'), '2025-04-01').outputs.runtimeBindingsBlobUrl.value, 'ledgerBlobUrl', reference(resourceId('Microsoft.Resources/deployments', 'brk301-payroll-storage'), '2025-04-01').outputs.ledgerBlobUrl.value, 'searchEndpoint', reference(resourceId('Microsoft.Resources/deployments', 'brk301-payroll-search'), '2025-04-01').outputs.endpoint.value), createObject())]"
+    }
+  }
+}
