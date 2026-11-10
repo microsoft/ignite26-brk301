@@ -40,3 +40,10 @@ public release.
 
 The optional ASSERT integration retains its separate reviewed upstream source
 lock and isolated installation instructions.
+
+## Session visuals
+
+The two README architecture images are the session author's supplied slide
+exports, copied unchanged. Their conversations and IQ groupings are
+illustrative, not live tenant evidence or a claim that every depicted source is
+implemented. The full presentation is not included.

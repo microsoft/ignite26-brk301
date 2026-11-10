@@ -46,15 +46,3 @@ Only select `collaboration` mode deliberately; it is not the default
 Run the project's offline checks first, then verify actual identity access,
 tool evidence, approval correlation, and results in your environment.
 Local tests or a clicked button are not deployment-success evidence.
-
-## Button analytics
-
-The button's first-party redirect records a deployment-launch timestamp before
-opening Codespaces. It does not record your name, IP address, account, tenant,
-or credentials in its event table, and it sets no cookies.
-Obvious preview/prefetch requests and `HEAD` probes are excluded.
-The metric is **launch clicks**, not unique people, completed Codespaces, or
-successful deployments. Bots and retries can still affect counts.
-
-Maintainers can query the protected statistics endpoint using the
-[click-tracker operations guide](deploy-tracker.md).
