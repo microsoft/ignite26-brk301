@@ -1,0 +1,153 @@
+{
+  "$schema": "1.0.0",
+  "artifactId": "{{HOTEL_OPERATIONS_LAKEHOUSE_ID}}",
+  "workspaceId": "{{WORKSPACE_ID}}",
+  "displayName": "HotelOperations",
+  "type": "lakehouse_tables",
+  "userDescription": "## Authority\n\nAuthoritative operational record for the complete hotel property estate.\n\n## Use this source for\n\n- Property, room, room-type, amenity, outlet, inventory, and rate facts.\n- Daily operating performance, maintenance requests, and work-order status.\n- Official property names and stable operational business keys.\n\n## Boundary\n\nGuest identity, reservations, stays, folios, payments, disputes, and special requests belong to HotelGuestServices.",
+  "dataSourceInstructions": "Use HotelOperations for authoritative property and operational reads; route guest, reservation, and folio questions elsewhere. Join cross-source results with `property_id` and resolve it to the official property name. Data dictionary: `properties` is the property master. Fields: `property_id` is the stable hotel key; `name` is the official display name; `region`, `city`, and `country` locate the property; `currency` is its reporting currency; `tax_rate` is the local hotel tax rate; `facilities` lists on-property facilities; `pool_hours` states pool availability; `parking` contains parking and valet details including stated prices; `transport` contains shuttle and transportation details. `property_daily_metrics` stores daily operating facts. Fields: `service_date` is the business date; `sellable_rooms` and `occupied_rooms` are inventory counts; `room_revenue` is room revenue in property currency. `maintenance_requests` stores reported facilities issues. Fields: `maintenance_request_id` is the request key; `property_id` joins the property; `status` is workflow state; `reported_at` is the report timestamp. `work_orders` stores execution records. Fields: `work_order_id` is the work key; `maintenance_request_id` joins the originating request; `priority` is urgency; `opened_at` is the opening timestamp.",
+  "elements": [
+    {
+      "id": "00000000-0000-4000-8000-000000000185",
+      "display_name": "dbo",
+      "type": "lakehouse_tables.schema",
+      "is_selected": true,
+      "children": [
+        {
+          "id": "00000000-0000-4000-8000-000000000163",
+          "display_name": "properties",
+          "type": "lakehouse_tables.table",
+          "is_selected": true,
+          "children": [
+            {
+              "id": "00000000-0000-4000-8000-000000000144",
+              "display_name": "property_id",
+              "type": "lakehouse_tables.column",
+              "data_type": "string"
+            },
+            {
+              "id": "00000000-0000-4000-8000-000000000120",
+              "display_name": "name",
+              "type": "lakehouse_tables.column",
+              "data_type": "string"
+            },
+            {
+              "id": "00000000-0000-4000-8000-000000000037",
+              "display_name": "region",
+              "type": "lakehouse_tables.column",
+              "data_type": "string"
+            },
+            {
+              "id": "00000000-0000-4000-8000-000000000092",
+              "display_name": "city",
+              "type": "lakehouse_tables.column",
+              "data_type": "string"
+            },
+            {
+              "id": "00000000-0000-4000-8000-000000000063",
+              "display_name": "currency",
+              "type": "lakehouse_tables.column",
+              "data_type": "string"
+            }
+          ]
+        },
+        {
+          "id": "00000000-0000-4000-8000-000000000007",
+          "display_name": "property_daily_metrics",
+          "type": "lakehouse_tables.table",
+          "is_selected": true,
+          "children": [
+            {
+              "id": "00000000-0000-4000-8000-000000000047",
+              "display_name": "service_date",
+              "type": "lakehouse_tables.column",
+              "data_type": "date"
+            },
+            {
+              "id": "00000000-0000-4000-8000-000000000174",
+              "display_name": "sellable_rooms",
+              "type": "lakehouse_tables.column",
+              "data_type": "int"
+            },
+            {
+              "id": "00000000-0000-4000-8000-000000000017",
+              "display_name": "occupied_rooms",
+              "type": "lakehouse_tables.column",
+              "data_type": "int"
+            },
+            {
+              "id": "00000000-0000-4000-8000-000000000131",
+              "display_name": "room_revenue",
+              "type": "lakehouse_tables.column",
+              "data_type": "decimal"
+            }
+          ]
+        },
+        {
+          "id": "00000000-0000-4000-8000-000000000178",
+          "display_name": "maintenance_requests",
+          "type": "lakehouse_tables.table",
+          "is_selected": true,
+          "children": [
+            {
+              "id": "00000000-0000-4000-8000-000000000154",
+              "display_name": "maintenance_request_id",
+              "type": "lakehouse_tables.column",
+              "data_type": "string"
+            },
+            {
+              "id": "00000000-0000-4000-8000-000000000180",
+              "display_name": "property_id",
+              "type": "lakehouse_tables.column",
+              "data_type": "string"
+            },
+            {
+              "id": "00000000-0000-4000-8000-000000000097",
+              "display_name": "status",
+              "type": "lakehouse_tables.column",
+              "data_type": "string"
+            },
+            {
+              "id": "00000000-0000-4000-8000-000000000173",
+              "display_name": "reported_at",
+              "type": "lakehouse_tables.column",
+              "data_type": "timestamp"
+            }
+          ]
+        },
+        {
+          "id": "00000000-0000-4000-8000-000000000075",
+          "display_name": "work_orders",
+          "type": "lakehouse_tables.table",
+          "is_selected": true,
+          "children": [
+            {
+              "id": "00000000-0000-4000-8000-000000000085",
+              "display_name": "work_order_id",
+              "type": "lakehouse_tables.column",
+              "data_type": "string"
+            },
+            {
+              "id": "00000000-0000-4000-8000-000000000107",
+              "display_name": "maintenance_request_id",
+              "type": "lakehouse_tables.column",
+              "data_type": "string"
+            },
+            {
+              "id": "00000000-0000-4000-8000-000000000103",
+              "display_name": "priority",
+              "type": "lakehouse_tables.column",
+              "data_type": "string"
+            },
+            {
+              "id": "00000000-0000-4000-8000-000000000130",
+              "display_name": "opened_at",
+              "type": "lakehouse_tables.column",
+              "data_type": "timestamp"
+            }
+          ]
+        }
+      ]
+    }
+  ]
+}

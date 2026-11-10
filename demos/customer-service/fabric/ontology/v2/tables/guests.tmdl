@@ -1,0 +1,30 @@
+/// Authoritative HotelGuestServices.dbo.guests.
+table guests
+	lineageTag: 00000000-0000-4000-8000-000000000035
+
+	column guest_id
+		dataType: string
+		sourceColumn: guest_id
+		lineageTag: 00000000-0000-4000-8000-000000000139
+
+	column first_name
+		dataType: string
+		sourceColumn: first_name
+		lineageTag: 00000000-0000-4000-8000-000000000038
+
+	column last_name
+		dataType: string
+		sourceColumn: last_name
+		lineageTag: 00000000-0000-4000-8000-000000000125
+
+	column country
+		dataType: string
+		sourceColumn: country
+		lineageTag: 00000000-0000-4000-8000-000000000008
+
+	partition guests = entity
+		mode: directLake
+		source
+			entityName: guests
+			schemaName: dbo
+			expressionSource: HotelGuestServicesQuery

@@ -1,0 +1,95 @@
+{
+  "$schema": "https://developer.microsoft.com/json-schemas/fabric/item/report/definition/visualContainer/2.0.0/schema.json",
+  "name": "restaurant_table",
+  "position": {
+    "x": 1208,
+    "y": 512,
+    "z": 7,
+    "height": 320,
+    "width": 568,
+    "tabOrder": 7
+  },
+  "visual": {
+    "visualType": "tableEx",
+    "query": {
+      "queryState": {
+        "Values": {
+          "projections": [
+            {
+              "field": {
+                "Column": {
+                  "Expression": {
+                    "SourceRef": {
+                      "Entity": "Outlet"
+                    }
+                  },
+                  "Property": "Outlet Name"
+                }
+              },
+              "queryRef": "Outlet.Outlet Name",
+              "active": true
+            },
+            {
+              "field": {
+                "Aggregation": {
+                  "Expression": {
+                    "Column": {
+                      "Expression": {
+                        "SourceRef": {
+                          "Entity": "Restaurant Daily"
+                        }
+                      },
+                      "Property": "Confirmed Reservations"
+                    }
+                  },
+                  "Function": 0
+                }
+              },
+              "queryRef": "Sum(Restaurant Daily.Confirmed Reservations)",
+              "active": true
+            },
+            {
+              "field": {
+                "Aggregation": {
+                  "Expression": {
+                    "Column": {
+                      "Expression": {
+                        "SourceRef": {
+                          "Entity": "Restaurant Daily"
+                        }
+                      },
+                      "Property": "Seated Reservations"
+                    }
+                  },
+                  "Function": 0
+                }
+              },
+              "queryRef": "Sum(Restaurant Daily.Seated Reservations)",
+              "active": true
+            },
+            {
+              "field": {
+                "Aggregation": {
+                  "Expression": {
+                    "Column": {
+                      "Expression": {
+                        "SourceRef": {
+                          "Entity": "Restaurant Daily"
+                        }
+                      },
+                      "Property": "Cancelled Reservations"
+                    }
+                  },
+                  "Function": 0
+                }
+              },
+              "queryRef": "Sum(Restaurant Daily.Cancelled Reservations)",
+              "active": true
+            }
+          ]
+        }
+      }
+    },
+    "drillFilterOtherVisuals": true
+  }
+}

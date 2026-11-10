@@ -1,0 +1,37 @@
+/// Maintenance work order, priority, and operational state, linked to its originating request.
+entity usertypes#WorkOrder
+	lineageTag: 00000000-0000-4000-8000-000000000189
+	backingTable: work_orders
+	keyProperty: WorkOrderId
+
+	/// WorkOrderId from HotelOperations.dbo.work_orders.work_order_id.
+	property WorkOrderId
+		dataType: string
+		lineageTag: 00000000-0000-4000-8000-000000000083
+
+		backingConfiguration
+			valueColumn: work_orders.work_order_id
+
+	/// MaintenanceRequestId from HotelOperations.dbo.work_orders.maintenance_request_id.
+	property MaintenanceRequestId
+		dataType: string
+		lineageTag: 00000000-0000-4000-8000-000000000179
+
+		backingConfiguration
+			valueColumn: work_orders.maintenance_request_id
+
+	/// Priority from HotelOperations.dbo.work_orders.priority.
+	property Priority
+		dataType: string
+		lineageTag: 00000000-0000-4000-8000-000000000015
+
+		backingConfiguration
+			valueColumn: work_orders.priority
+
+	/// Status from HotelOperations.dbo.work_orders.status.
+	property Status
+		dataType: string
+		lineageTag: 00000000-0000-4000-8000-000000000177
+
+		backingConfiguration
+			valueColumn: work_orders.status

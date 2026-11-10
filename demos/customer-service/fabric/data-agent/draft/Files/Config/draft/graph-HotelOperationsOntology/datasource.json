@@ -1,0 +1,59 @@
+{
+  "$schema": "1.0.0",
+  "artifactId": "{{ONTOLOGY_ID}}",
+  "workspaceId": "{{WORKSPACE_ID}}",
+  "displayName": "HotelOperationsOntology",
+  "type": "graph",
+  "userDescription": "## Authority\n\nGoverned relationship source for connected hotel entities across operational and guest-service domains.\n\n## Use this source for\n\n- Traversing guests, reservations, stays, rooms, properties, and folios.\n- Following special-request and maintenance paths to their related records.\n- Answering adjacency, lineage, and connected-entity questions.\n\n## Boundary\n\nUse HotelOperationsModel for measures and the lakehouses for authoritative record attributes.",
+  "dataSourceInstructions": "Use HotelOperationsOntology only for relationship traversal, adjacency, and lineage questions; route arithmetic KPI questions to HotelOperationsModel. Data dictionary: `Property` represents a hotel. `Guest` represents a guest profile. `Reservation` represents a booking. `Stay` represents an occupied or completed visit. `MaintenanceRequest` represents a facilities issue. `GuestBookedReservation` connects a guest to a booking. `ReservationResultedInStay` connects a booking to its realized stay. `StayTriggeredMaintenanceRequest` connects a stay to a maintenance issue. Return entity identifiers needed for subsequent authoritative source lookups.",
+  "elements": [
+    {
+      "id": "00000000-0000-4000-8000-000000000005",
+      "display_name": "Property",
+      "type": "graph.nodeType",
+      "is_selected": true
+    },
+    {
+      "id": "00000000-0000-4000-8000-000000000175",
+      "display_name": "Guest",
+      "type": "graph.nodeType",
+      "is_selected": true
+    },
+    {
+      "id": "00000000-0000-4000-8000-000000000098",
+      "display_name": "Reservation",
+      "type": "graph.nodeType",
+      "is_selected": true
+    },
+    {
+      "id": "00000000-0000-4000-8000-000000000151",
+      "display_name": "Stay",
+      "type": "graph.nodeType",
+      "is_selected": true
+    },
+    {
+      "id": "00000000-0000-4000-8000-000000000129",
+      "display_name": "MaintenanceRequest",
+      "type": "graph.nodeType",
+      "is_selected": true
+    },
+    {
+      "id": "00000000-0000-4000-8000-000000000073",
+      "display_name": "GuestBookedReservation",
+      "type": "graph.edgeType",
+      "is_selected": true
+    },
+    {
+      "id": "00000000-0000-4000-8000-000000000188",
+      "display_name": "ReservationResultedInStay",
+      "type": "graph.edgeType",
+      "is_selected": true
+    },
+    {
+      "id": "00000000-0000-4000-8000-000000000019",
+      "display_name": "StayTriggeredMaintenanceRequest",
+      "type": "graph.edgeType",
+      "is_selected": true
+    }
+  ]
+}

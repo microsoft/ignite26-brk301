@@ -426,3 +426,27 @@ FodyWeavers.xsd
 
 # Official VS Code C# Dev Kit Extension exclusion
 #*.lscache
+
+# Demo runtime and operator-local state
+.venv/
+venv/
+.state/
+.azure/
+.foundry/
+.pytest_cache/
+.mypy_cache/
+.ruff_cache/
+*.egg-info/
+.env
+.env.*
+!.env.example
+!.env.template
+environment.local.json
+a365.config.json
+a365.generated.config.json
+dist/
+build/
+coverage/
+*.otlp.json
+*.zip
+*.pptx

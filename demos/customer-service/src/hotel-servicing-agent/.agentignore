@@ -1,0 +1,8 @@
+.env*
+.foundry
+.agent_configs
+.azure
+.venv
+__pycache__
+*.pyc
+tests

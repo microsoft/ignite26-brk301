@@ -1,0 +1,35 @@
+/// Authoritative HotelOperations.dbo.properties.
+table properties
+	lineageTag: 00000000-0000-4000-8000-000000000187
+
+	column property_id
+		dataType: string
+		sourceColumn: property_id
+		lineageTag: 00000000-0000-4000-8000-000000000061
+
+	column name
+		dataType: string
+		sourceColumn: name
+		lineageTag: 00000000-0000-4000-8000-000000000182
+
+	column region
+		dataType: string
+		sourceColumn: region
+		lineageTag: 00000000-0000-4000-8000-000000000003
+
+	column city
+		dataType: string
+		sourceColumn: city
+		lineageTag: 00000000-0000-4000-8000-000000000152
+
+	column currency
+		dataType: string
+		sourceColumn: currency
+		lineageTag: 00000000-0000-4000-8000-000000000077
+
+	partition properties = entity
+		mode: directLake
+		source
+			entityName: properties
+			schemaName: dbo
+			expressionSource: HotelOperationsQuery

@@ -1,0 +1,30 @@
+{
+  "fixture_kind": "initial_finance_baseline",
+  "ledger_version": "initial-baseline-not-live-ledger",
+  "ledger_status": "initial_baseline",
+  "authoritative": false,
+  "accounts": [
+    {"account_id": "hotel-reserve", "balance_cents": 5000000, "currency": "USD"},
+    {"account_id": "hotel-payroll", "balance_cents": 1000000, "currency": "USD"}
+  ],
+  "payroll": {
+    "task_id": "payroll-funding",
+    "obligation_cents": 2500000,
+    "source_account_id": "hotel-reserve",
+    "destination_account_id": "hotel-payroll",
+    "currency": "USD",
+    "status": "pending"
+  },
+  "approval_policy": {
+    "approval_threshold_cents": 1000000,
+    "comparison": "strictly_greater_than",
+    "decision_rule": "first_authenticated_eligible_decision_wins_atomically",
+    "expiry": "none",
+    "notification_channels": ["teams", "email"],
+    "notifications_per_request": 4,
+    "execution_role": "banking_operations"
+  },
+  "transactions": [],
+  "approvals": [],
+  "notifications": []
+}

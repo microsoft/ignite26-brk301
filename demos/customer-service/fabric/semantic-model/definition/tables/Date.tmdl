@@ -1,0 +1,11 @@
+table Date
+
+	column Date
+		dataType: dateTime
+		isKey
+		summarizeBy: none
+		sourceColumn: [Date]
+
+	partition Date = calculated
+		mode: import
+		source = CALENDAR(DATE(2026, 5, 8), DATE(2027, 6, 7))

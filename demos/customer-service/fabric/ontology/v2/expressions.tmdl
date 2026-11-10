@@ -1,0 +1,13 @@
+expression HotelOperationsQuery =
+		let
+		    database = Sql.Database("{{FABRIC_SQL_SERVER}}", "{{HOTEL_OPERATIONS_SQL_ENDPOINT_ID}}")
+		in
+		    database
+	lineageTag: 00000000-0000-4000-8000-000000000088
+
+expression HotelGuestServicesQuery =
+		let
+		    database = Sql.Database("{{FABRIC_SQL_SERVER}}", "{{HOTEL_GUEST_SERVICES_SQL_ENDPOINT_ID}}")
+		in
+		    database
+	lineageTag: 00000000-0000-4000-8000-000000000113

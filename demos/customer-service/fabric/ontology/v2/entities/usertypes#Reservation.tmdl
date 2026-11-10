@@ -1,0 +1,45 @@
+/// Authoritative booking identity, guest, property, arrival date, and lifecycle status. Use the fixed 2026-11-08 boundary: past arrival dates are strictly before it and future arrival dates strictly after it; the boundary itself is neither. Exact reservation identifiers must be searched across all dates.
+entity usertypes#Reservation
+	lineageTag: 00000000-0000-4000-8000-000000000112
+	backingTable: reservations
+	keyProperty: ReservationId
+
+	/// ReservationId from HotelGuestServices.dbo.reservations.reservation_id.
+	property ReservationId
+		dataType: string
+		lineageTag: 00000000-0000-4000-8000-000000000170
+
+		backingConfiguration
+			valueColumn: reservations.reservation_id
+
+	/// GuestId from HotelGuestServices.dbo.reservations.guest_id.
+	property GuestId
+		dataType: string
+		lineageTag: 00000000-0000-4000-8000-000000000183
+
+		backingConfiguration
+			valueColumn: reservations.guest_id
+
+	/// PropertyId from HotelGuestServices.dbo.reservations.property_id.
+	property PropertyId
+		dataType: string
+		lineageTag: 00000000-0000-4000-8000-000000000045
+
+		backingConfiguration
+			valueColumn: reservations.property_id
+
+	/// CheckIn from HotelGuestServices.dbo.reservations.check_in.
+	property CheckIn
+		dataType: dateTime
+		lineageTag: 00000000-0000-4000-8000-000000000066
+
+		backingConfiguration
+			valueColumn: reservations.check_in
+
+	/// Status from HotelGuestServices.dbo.reservations.status.
+	property Status
+		dataType: string
+		lineageTag: 00000000-0000-4000-8000-000000000055
+
+		backingConfiguration
+			valueColumn: reservations.status

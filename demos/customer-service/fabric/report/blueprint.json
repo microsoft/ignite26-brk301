@@ -1,0 +1,19 @@
+{
+  "displayName": "HotelOperationsReport",
+  "description": "Deployable PBIR report bound to HotelOperationsModel by semanticmodelid connection string.",
+  "itemType": "Report",
+  "definitionFormat": "PBIR",
+  "definitionRoot": "fabric/report",
+  "includePaths": [
+    "definition.pbir",
+    "definition/**"
+  ],
+  "deployable": true,
+  "dependencies": [
+    "semanticModel:HotelOperationsModel"
+  ],
+  "pages": [
+    "Performance & bookings",
+    "Operations & service"
+  ]
+}

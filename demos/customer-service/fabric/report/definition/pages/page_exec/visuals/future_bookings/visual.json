@@ -1,0 +1,60 @@
+{
+  "$schema": "https://developer.microsoft.com/json-schemas/fabric/item/report/definition/visualContainer/2.0.0/schema.json",
+  "name": "future_bookings",
+  "position": {
+    "x": 616,
+    "y": 168,
+    "z": 5,
+    "height": 492,
+    "width": 568,
+    "tabOrder": 5
+  },
+  "visual": {
+    "visualType": "clusteredColumnChart",
+    "query": {
+      "queryState": {
+        "Category": {
+          "projections": [
+            {
+              "field": {
+                "Column": {
+                  "Expression": {
+                    "SourceRef": {
+                      "Entity": "Property"
+                    }
+                  },
+                  "Property": "Property Name"
+                }
+              },
+              "queryRef": "Property.Property Name",
+              "active": true
+            }
+          ]
+        },
+        "Y": {
+          "projections": [
+            {
+              "field": {
+                "Aggregation": {
+                  "Expression": {
+                    "Column": {
+                      "Expression": {
+                        "SourceRef": {
+                          "Entity": "Booking Pace Daily"
+                        }
+                      },
+                      "Property": "Future Bookings"
+                    }
+                  },
+                  "Function": 0
+                }
+              },
+              "queryRef": "Sum(Booking Pace Daily.Future Bookings)"
+            }
+          ]
+        }
+      }
+    },
+    "drillFilterOtherVisuals": true
+  }
+}

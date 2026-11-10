@@ -1,0 +1,22 @@
+{
+  "tenantId": "REPLACE_WITH_DIRECTORY_ID",
+  "subscriptionId": "REPLACE_WITH_SUBSCRIPTION_ID",
+  "resourceGroup": "REPLACE_WITH_RESOURCE_GROUP",
+  "location": "eastus2",
+  "searchLocation": "eastus",
+  "managerUpn": "REPLACE_WITH_MANAGER_UPN",
+  "approverUpns": [
+    "REPLACE_WITH_PRIMARY_APPROVER_UPN",
+    "REPLACE_WITH_SECONDARY_APPROVER_UPN"
+  ],
+  "hotelOwnerId": "hotel-001",
+  "fabric": {
+    "capacityId": "REPLACE_WITH_ACTIVE_FABRIC_CAPACITY_UUID",
+    "workspaceName": "FinanceAnalytics-dev"
+  },
+  "foundry": {
+    "account": "REPLACE_WITH_FOUNDRY_ACCOUNT",
+    "project": "REPLACE_WITH_FOUNDRY_PROJECT",
+    "modelDeployment": "gpt-5.4-mini"
+  }
+}

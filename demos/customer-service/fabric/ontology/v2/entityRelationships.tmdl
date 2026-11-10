@@ -1,0 +1,71 @@
+/// Property to Room through the authoritative key join.
+entityRelationship usertypes#PropertyHasRoom
+	lineageTag: 00000000-0000-4000-8000-000000000102
+	fromEntity: usertypes#Property
+	toEntity: usertypes#Room
+
+	backingConfiguration
+		relationship: rel_PropertyHasRoom
+
+/// Guest to Reservation through the authoritative key join.
+entityRelationship usertypes#GuestBookedReservation
+	lineageTag: 00000000-0000-4000-8000-000000000159
+	fromEntity: usertypes#Guest
+	toEntity: usertypes#Reservation
+
+	backingConfiguration
+		relationship: rel_GuestBookedReservation
+
+/// Reservation to Stay through the authoritative key join.
+entityRelationship usertypes#ReservationResultedInStay
+	lineageTag: 00000000-0000-4000-8000-000000000082
+	fromEntity: usertypes#Reservation
+	toEntity: usertypes#Stay
+
+	backingConfiguration
+		relationship: rel_ReservationResultedInStay
+
+/// Stay to Room through the authoritative key join.
+entityRelationship usertypes#StayAssignedRoom
+	lineageTag: 00000000-0000-4000-8000-000000000072
+	fromEntity: usertypes#Stay
+	toEntity: usertypes#Room
+
+	backingConfiguration
+		relationship: rel_StayAssignedRoom
+
+/// Stay to Folio through the authoritative key join.
+entityRelationship usertypes#StayHasFolio
+	lineageTag: 00000000-0000-4000-8000-000000000166
+	fromEntity: usertypes#Stay
+	toEntity: usertypes#Folio
+
+	backingConfiguration
+		relationship: rel_StayHasFolio
+
+/// Reservation to SpecialRequest through the authoritative key join.
+entityRelationship usertypes#ReservationHasSpecialRequest
+	lineageTag: 00000000-0000-4000-8000-000000000137
+	fromEntity: usertypes#Reservation
+	toEntity: usertypes#SpecialRequest
+
+	backingConfiguration
+		relationship: rel_ReservationHasSpecialRequest
+
+/// Stay to MaintenanceRequest through the authoritative key join.
+entityRelationship usertypes#StayTriggeredMaintenanceRequest
+	lineageTag: 00000000-0000-4000-8000-000000000191
+	fromEntity: usertypes#Stay
+	toEntity: usertypes#MaintenanceRequest
+
+	backingConfiguration
+		relationship: rel_StayTriggeredMaintenanceRequest
+
+/// MaintenanceRequest to WorkOrder through the authoritative key join.
+entityRelationship usertypes#MaintenanceRequestTracksWorkOrder
+	lineageTag: 00000000-0000-4000-8000-000000000060
+	fromEntity: usertypes#MaintenanceRequest
+	toEntity: usertypes#WorkOrder
+
+	backingConfiguration
+		relationship: rel_MaintenanceRequestTracksWorkOrder

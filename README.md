@@ -1,14 +1,48 @@
-# Project
+# Ignite 2026 BRK301: From grounded answers to agents that act
 
-> This repo has been populated by an initial template to help get you started. Please
-> make sure to update the content to build a great experience for community-building.
+One hotel story, two demonstrations: start with a customer-service agent using
+Microsoft IQ, then bring two Agent 365 autopilots into the same Microsoft Teams
+group chat to coordinate payroll funding with human approval.
 
-As the maintainer of this project, please make a few updates:
+| Demo | What you see | Source |
+| --- | --- | --- |
+| Customer service | A single agent combines Foundry IQ policy and property knowledge, Fabric IQ operational data, and Work IQ workplace context. | [Customer-service project](demos/customer-service/README.md) |
+| Proactive collaboration | Hotel Payroll identifies a funding shortfall; Hotel Treasurer coordinates approval, executes the authorized synthetic transfer, and reports the result in their shared chat. | [Payroll project](demos/payroll-autopilots/README.md) |
 
-- Improving this README.MD file to provide a great experience
-- Updating SUPPORT.MD with content about this project's support experience
-- Understanding the security reporting process in SECURITY.MD
-- Remove this section from the README
+Start with the [session walkthrough](docs/demo-walkthrough.md), then read the
+[architecture](docs/architecture.md) and [setup guide](docs/setup.md).
+The projects have independent environments and deployment entry points; do not
+install both Python dependency sets in one environment.
+
+## What is included
+
+- Foundry Hosted Agent implementations, prompts, tools, infrastructure templates,
+  synthetic hotel datasets, knowledge documents, and tests.
+- An optional authenticated voice frontend for customer service.
+- Two independent Agent 365 autopilot identities and a durable, idempotent
+  simulated finance ledger, including approval and duplicate-delivery handling.
+- Offline checks and GitHub Actions validation that do not deploy resources,
+  send messages, hire agents, or move money.
+
+This is a conference sample, not a production banking integration or a
+one-command tenant deployment. Cloud execution requires your own Azure,
+Microsoft Fabric, Microsoft 365, and Agent 365 access, permissions, capacity,
+and compatible preview features. The sample contains no live tenant bindings.
+Values beginning with `replace`, `REPLACE_WITH_`, and sample UUIDs beginning
+`00000000-0000-4000-8000-` must be replaced with your own deployment outputs.
+
+## Validation
+
+See each project's README for isolated local checks. The
+[validation workflow](.github/workflows/validate.yml) runs customer-service
+Python checks, the voice frontend checks, the Agent 365 bridge tests, payroll
+tests, and the repository publication checks.
+
+Source lineage and intentional exclusions are recorded in
+[source attribution](docs/source-attribution.md). Slide-derived visuals are not
+included in this revision; the session deck remains a separate presentation.
+No live chat transcripts, tenant screenshots, or operator acceptance evidence
+are distributed with the sample.
 
 ## Contributing
 

@@ -1,0 +1,95 @@
+{
+  "$schema": "1.0.0",
+  "artifactId": "{{SEMANTICMODEL_ID}}",
+  "workspaceId": "{{WORKSPACE_ID}}",
+  "displayName": "HotelOperationsModel",
+  "type": "semantic_model",
+  "userDescription": "## Authority\n\nGoverned analytical source for cross-property hotel performance.\n\n## Use this source for\n\n- Certified occupancy, rate, revenue, length-of-stay, cancellation, and no-show measures.\n- Booking-channel trends, service-request patterns, dispute trends, and maintenance response.\n- Comparisons and aggregations that must use established semantic-model measures.\n\n## Boundary\n\nUse the lakehouses for record-level attributes and HotelOperationsOntology for relationship traversal.",
+  "dataSourceInstructions": "Use HotelOperationsModel for governed KPI calculations and cross-domain trends; prefer its measures and DAX rather than recalculating them in SQL. Data dictionary: `Property KPI Daily` is the daily property performance fact. Fields: `Service Date` is business date; `Room Revenue` is governed room revenue; `OCC` is occupancy rate; `ADR` is average daily rate; `RevPAR` is revenue per available room; `ALOS` is average length of stay. `Booking Pace Daily` is the booking-channel trend fact. Fields: `Channel` is booking origin; `Cancellation Rate` is cancelled reservations divided by reservations; `No Show Rate` is no-shows divided by reservations. `Maintenance Response Daily` is the service-response fact. Field: `Maintenance Response Hours` is governed elapsed response time.",
+  "elements": [
+    {
+      "id": "00000000-0000-4000-8000-000000000119",
+      "display_name": "Property KPI Daily",
+      "type": "semantic_model.table",
+      "is_selected": true,
+      "children": [
+        {
+          "id": "00000000-0000-4000-8000-000000000089",
+          "display_name": "Service Date",
+          "type": "semantic_model.column",
+          "data_type": "datetime"
+        },
+        {
+          "id": "00000000-0000-4000-8000-000000000099",
+          "display_name": "Room Revenue",
+          "type": "semantic_model.measure",
+          "data_type": "decimal"
+        },
+        {
+          "id": "00000000-0000-4000-8000-000000000140",
+          "display_name": "OCC",
+          "type": "semantic_model.measure",
+          "data_type": "decimal"
+        },
+        {
+          "id": "00000000-0000-4000-8000-000000000036",
+          "display_name": "ADR",
+          "type": "semantic_model.measure",
+          "data_type": "decimal"
+        },
+        {
+          "id": "00000000-0000-4000-8000-000000000133",
+          "display_name": "RevPAR",
+          "type": "semantic_model.measure",
+          "data_type": "decimal"
+        },
+        {
+          "id": "00000000-0000-4000-8000-000000000076",
+          "display_name": "ALOS",
+          "type": "semantic_model.measure",
+          "data_type": "decimal"
+        }
+      ]
+    },
+    {
+      "id": "00000000-0000-4000-8000-000000000181",
+      "display_name": "Booking Pace Daily",
+      "type": "semantic_model.table",
+      "is_selected": true,
+      "children": [
+        {
+          "id": "00000000-0000-4000-8000-000000000106",
+          "display_name": "Channel",
+          "type": "semantic_model.column",
+          "data_type": "string"
+        },
+        {
+          "id": "00000000-0000-4000-8000-000000000070",
+          "display_name": "Cancellation Rate",
+          "type": "semantic_model.measure",
+          "data_type": "decimal"
+        },
+        {
+          "id": "00000000-0000-4000-8000-000000000034",
+          "display_name": "No Show Rate",
+          "type": "semantic_model.measure",
+          "data_type": "decimal"
+        }
+      ]
+    },
+    {
+      "id": "00000000-0000-4000-8000-000000000069",
+      "display_name": "Maintenance Response Daily",
+      "type": "semantic_model.table",
+      "is_selected": true,
+      "children": [
+        {
+          "id": "00000000-0000-4000-8000-000000000193",
+          "display_name": "Maintenance Response Hours",
+          "type": "semantic_model.measure",
+          "data_type": "decimal"
+        }
+      ]
+    }
+  ]
+}
