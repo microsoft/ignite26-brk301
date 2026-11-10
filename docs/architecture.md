@@ -33,9 +33,14 @@ surfaces, not extra payroll agents.
 ## Payroll collaboration
 
 `demos/payroll-autopilots/src/finance_autopilots` contains two independently
-hired Agent 365 autopilots. Stable internal role keys are `hotel_finance` and
-`banking_operations`; user-facing names are Hotel Payroll and Hotel Treasurer.
+hired agents with accounts, governed by Agent 365. Stable internal role keys are
+`hotel_finance` and `banking_operations`; user-facing names are Hotel Payroll
+and Hotel Treasurer.
 Do not rename role keys or reuse one identity for both agents.
+
+The customer-facing term is **agents with accounts**. Existing source paths,
+package names, resource names, and API fields that contain `autopilot` are
+compatibility identifiers, not the current product terminology.
 
 The transactional ledger is authoritative. Amounts are integer cents; approval,
 balance updates, transaction identity, and notification state are durably guarded

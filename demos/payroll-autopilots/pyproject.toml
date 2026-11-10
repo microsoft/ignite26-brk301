@@ -5,7 +5,7 @@ build-backend = "setuptools.build_meta"
 [project]
 name = "hotel-bank-finance-autopilots"
 version = "0.1.0"
-description = "Independent Hotel Payroll and Hotel Treasurer Autopilots"
+description = "Hotel Payroll and Hotel Treasurer agents with accounts"
 requires-python = ">=3.11"
 dependencies = [
     "azure-identity==1.25.3",

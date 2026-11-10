@@ -4,9 +4,9 @@
 
 Begin with one customer-service agent that understands a hotel guest's request.
 Introduce each source of context separately, then show how they work together.
-End with two Agent 365 autopilots, each with its own identity, collaborating in
-one Microsoft Teams chat. A mailbox is one communication surface of an identity,
-not the definition of the agent.
+End with two agents with accounts, each with its own Agent 365 identity,
+collaborating in one Microsoft Teams chat. A mailbox is one communication
+surface of an identity, not the definition of the agent.
 
 ## Act 1: Customer service, one IQ at a time
 

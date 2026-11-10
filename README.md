@@ -1,8 +1,8 @@
 # Ignite 2026 BRK301: From grounded answers to agents that act
 
 One hotel story, two demonstrations: start with a customer-service agent using
-Microsoft IQ, then bring two Agent 365 autopilots into the same Microsoft Teams
-group chat to coordinate payroll funding with human approval.
+Microsoft IQ, then bring two agents with accounts into the same Microsoft Teams
+group chat to coordinate payroll funding with human approval through Agent 365.
 
 | Demo | What you see | Source |
 | --- | --- | --- |
@@ -19,8 +19,9 @@ install both Python dependency sets in one environment.
 - Foundry Hosted Agent implementations, prompts, tools, infrastructure templates,
   synthetic hotel datasets, knowledge documents, and tests.
 - An optional authenticated voice frontend for customer service.
-- Two independent Agent 365 autopilot identities and a durable, idempotent
-  simulated finance ledger, including approval and duplicate-delivery handling.
+- Two independent agents with accounts, each with its own Agent 365 identity,
+  and a durable, idempotent simulated finance ledger with approval and
+  duplicate-delivery handling.
 - Offline checks and GitHub Actions validation that do not deploy resources,
   send messages, hire agents, or move money.
 

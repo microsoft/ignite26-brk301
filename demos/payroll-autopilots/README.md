@@ -1,9 +1,9 @@
 # Hotel Payroll and Hotel Treasurer
 
-**Act 2 of BRK301:** two independent Agent 365 autopilots collaborate in a
-Microsoft Teams group chat. Hotel Payroll identifies the shortfall; Hotel
-Treasurer coordinates human approval and executes the authorized synthetic
-transfer. See the [walkthrough](../../docs/demo-walkthrough.md).
+**Act 2 of BRK301:** two independent agents with accounts, governed by Agent 365,
+collaborate in a Microsoft Teams group chat. Hotel Payroll identifies the
+shortfall; Hotel Treasurer coordinates human approval and executes the
+authorized synthetic transfer. See the [walkthrough](../../docs/demo-walkthrough.md).
 
 The seed is payroll USD 10,000, reserve USD 50,000, and a recorded USD 25,000
 obligation. An approved USD 15,000 transfer leaves payroll USD 25,000 and reserve
@@ -46,6 +46,10 @@ resources. See [staged setup](docs/setup.md) before invoking provisioning script
 Keep `hotel_finance` and `banking_operations` as the internal role keys.
 The public names are Hotel Payroll and Hotel Treasurer. Bind each to a distinct,
 manager-verified hire; do not reuse an operator identity.
+
+**Agents with accounts** is the customer-facing term. Legacy source paths,
+package/resource names, and publication API fields remain unchanged for
+compatibility; they are not display names.
 
 Default `three_iq` mode requires successful Foundry IQ, Fabric IQ, and Work IQ
 evidence plus physical projection validation before governed model-driven
