@@ -1,9 +1,12 @@
 # Deploy the demo in your environment
 
-The README **Deploy this demo** button opens an Azure portal custom deployment,
-not Codespaces. It provisions Azure resources in your subscription. Afterward,
+The README **Deploy this demo** button uses
+[aka.ms/ignite26-brk301/deploy](https://aka.ms/ignite26-brk301/deploy) to open
+an Azure portal custom deployment in your subscription. Afterward,
 complete the scenario-specific data, agent, and Microsoft 365 configuration below.
 **A successful Azure deployment is not yet a ready-to-chat demo.**
+
+If needed, use the [direct Azure portal deployment](https://portal.azure.com/#create/Microsoft.Template/uri/https%3A%2F%2Fraw.githubusercontent.com%2Fmicrosoft%2Fignite26-brk301%2Fmain%2Finfra%2Fazuredeploy.json).
 
 ## 1. Deploy Azure resources
 
@@ -169,9 +172,9 @@ python scripts\check_public_sample.py
 python -m unittest discover -s tests -v
 ```
 
-CI rebuilds the template and rejects drift. Maintainers can replace the README
-button destination with an aka redirect to the same Azure portal URL for click
-tracking; the repository contains no tracking service.
+CI rebuilds the template and rejects drift. The README button uses the
+maintainer-managed aka link for click tracking; the repository contains no
+tracking service.
 
 The button uses the documented
 [Deploy to Azure template URL format](https://learn.microsoft.com/azure/azure-resource-manager/templates/deploy-to-azure-button).

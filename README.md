@@ -5,7 +5,7 @@ Services customer-service agent using Microsoft IQ, then bring Hotel Payroll
 and Hotel Treasurer into the same Microsoft Teams group chat. These two agents
 with accounts coordinate payroll funding with human approval through Agent 365.
 
-[![Deploy this demo](docs/images/deploy-button.svg)](https://portal.azure.com/#create/Microsoft.Template/uri/https%3A%2F%2Fraw.githubusercontent.com%2Fmicrosoft%2Fignite26-brk301%2Fmain%2Finfra%2Fazuredeploy.json)
+[![Deploy this demo](docs/images/deploy-button.svg)](https://aka.ms/ignite26-brk301/deploy)
 
 Deploy Azure resources for either scenario or both in your own subscription.
 Then follow the [post-deployment steps](docs/deploy.md#2-continue-after-azure-deployment)

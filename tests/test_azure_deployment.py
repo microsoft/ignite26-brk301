@@ -32,10 +32,13 @@ class AzureDeploymentTests(unittest.TestCase):
             with redirect_stdout(io.StringIO()):
                 self.assertEqual(MODULE.check(path), 1)
 
-    def test_readme_button_opens_azure_with_the_committed_template(self):
+    def test_readme_uses_aka_and_direct_fallback_targets_the_committed_template(self):
         readme = (ROOT / "README.md").read_text(encoding="utf-8")
         target = re.search(r"\[!\[Deploy this demo\].*?\]\(([^)]+)\)", readme).group(1)
-        portal = urlsplit(target)
+        self.assertEqual(target, "https://aka.ms/ignite26-brk301/deploy")
+        guide = (ROOT / "docs" / "deploy.md").read_text(encoding="utf-8")
+        fallback = re.search(r"\[direct Azure portal deployment\]\(([^)]+)\)", guide).group(1)
+        portal = urlsplit(fallback)
         self.assertEqual((portal.scheme, portal.netloc), ("https", "portal.azure.com"))
         raw_url = unquote(portal.fragment.removeprefix("create/Microsoft.Template/uri/"))
         raw = urlsplit(raw_url)
