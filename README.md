@@ -5,11 +5,12 @@ Services customer-service agent using Microsoft IQ, then bring Hotel Payroll
 and Hotel Treasurer into the same Microsoft Teams group chat. These two agents
 with accounts coordinate payroll funding with human approval through Agent 365.
 
-[![Deploy this demo](docs/images/deploy-button.svg)](https://codespaces.new/microsoft/ignite26-brk301?quickstart=1&ref=main)
+[![Deploy this demo](docs/images/deploy-button.svg)](https://portal.azure.com/#create/Microsoft.Template/uri/https%3A%2F%2Fraw.githubusercontent.com%2Fmicrosoft%2Fignite26-brk301%2Fmain%2Finfra%2Fazuredeploy.json)
 
-Opens guided setup in your own GitHub Codespace. Azure, Fabric, Microsoft 365,
-and Agent 365 configuration still require your account and administrator steps.
-[Deployment guide](docs/deploy.md)
+Deploy Azure resources for either scenario or both in your own subscription.
+Then follow the [post-deployment steps](docs/deploy.md#2-continue-after-azure-deployment)
+to load data, deploy the agents, and configure Microsoft Fabric, Microsoft 365,
+and Agent 365. Azure provisioning alone does not make the agents ready to chat.
 
 | Agent | Role | Demo |
 | --- | --- | --- |

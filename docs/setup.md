@@ -35,6 +35,11 @@ manifests, tokens, and deployment outputs ignored.
 
 ## Cloud preparation order
 
+Start with [Deploy this demo](deploy.md) to provision the selected Azure
+foundation, then follow its post-deployment checklist. This replaces manual
+creation of the Azure account/project, model, Search, storage, and registry;
+it does not replace the data-loading, runtime, or tenant configuration steps.
+
 1. Verify current service availability, licenses, capacity, administrator consent,
    regional model quota, and access for your target tenant.
 2. Create or select your own Microsoft Foundry project and model deployment.
@@ -48,10 +53,10 @@ manifests, tokens, and deployment outputs ignored.
    communication. For payroll, verify an authenticated approval and one ledger
    effect in isolated synthetic state before using the demo live.
 
-The customer-service infrastructure and Fabric blueprints are building blocks,
-not a completed fresh-tenant installer. Some helper scripts are explicitly
-placeholders. The payroll scripts also require staged provisioning and hiring;
-neither project is advertised as a one-command deployment.
+The Azure portal template provisions infrastructure, not a completed
+fresh-tenant installation. The Fabric blueprints remain building blocks and
+some helper scripts are explicitly placeholders. Both scenarios still require
+the documented post-deployment steps, including staged provisioning and hiring.
 
 For current platform concepts, consult the official
 [Microsoft Foundry hosted-agent documentation](https://learn.microsoft.com/azure/foundry/agents/concepts/hosted-agents).
@@ -62,5 +67,5 @@ or substitute a different model while diagnosing setup failures.
 
 Repository tests establish offline behavior only. This import does not deploy
 or modify the existing conference demo, establish a successful customer-tenant
-installation, or make the repository public. Slide visuals are pending because
-the session-deck link was not readable from the connected demo account.
+installation, or make the repository public. The README uses the supplied
+illustrative session-slide images, not live tenant evidence.

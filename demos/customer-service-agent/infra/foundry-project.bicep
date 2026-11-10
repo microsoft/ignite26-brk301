@@ -9,6 +9,9 @@ param accountName string
 @description('Name of the new Foundry project.')
 param projectName string
 
+@description('Display description for the new Foundry project.')
+param projectDescription string = 'Hotel guest-services agent with Fabric, Foundry IQ, Work IQ, and Agent 365.'
+
 @description('Model deployment capacity; verify regional subscription quota before deployment.')
 @minValue(1)
 param modelCapacity int
@@ -40,7 +43,7 @@ resource project 'Microsoft.CognitiveServices/accounts/projects@2025-06-01' = {
   }
   properties: {
     displayName: projectName
-    description: 'Hotel guest-services agent with Fabric, Foundry IQ, Work IQ, and Agent 365.'
+    description: projectDescription
   }
 }
 
@@ -80,6 +83,9 @@ resource projectModelAccess 'Microsoft.Authorization/roleAssignments@2022-04-01'
 }
 
 output accountId string = account.id
+output accountPrincipalId string = account.identity.principalId!
 output projectId string = project.id
 output projectPrincipalId string = project.identity.principalId!
+output projectEndpoint string = project.properties.endpoints['AI Foundry API']
+output modelEndpoint string = account.properties.endpoints['OpenAI Language Model Instance API']
 output modelDeploymentName string = model.name
