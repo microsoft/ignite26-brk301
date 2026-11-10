@@ -1,0 +1,6 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="230" height="52" viewBox="0 0 230 52" role="img" aria-labelledby="title">
+  <title id="title">Deploy this demo</title>
+  <rect x="1" y="1" width="228" height="50" rx="8" fill="#0078D4"/>
+  <path d="M22 18 L30 26 L22 34 M32 34 H42" fill="none" stroke="#fff" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"/>
+  <text x="58" y="33" fill="#fff" font-family="Arial, Helvetica, sans-serif" font-size="19">Deploy this demo</text>
+</svg>

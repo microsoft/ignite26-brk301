@@ -1,0 +1,63 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="1200" height="560" viewBox="0 0 1200 560" role="img" aria-labelledby="title description">
+<title id="title">One hotel, three agents, two scenarios</title>
+<desc id="description">Hotel Guest Services answers grounded customer questions. Hotel Payroll and Hotel Treasurer coordinate a synthetic payroll transfer with human approval.</desc>
+<defs><marker id="arrow" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="8" markerHeight="8" orient="auto-start-reverse"><path d="M 1 1 L 9 5 L 1 9" fill="none" stroke="context-stroke" stroke-width="1.5"/></marker></defs>
+<rect width="100%" height="100%" fill="#ffffff"/>
+<text id="scenario-overview-0" x="40" y="64" font-family="Arial, Helvetica, sans-serif" font-size="34" fill="#000000" data-max-width="1100">
+<tspan x="40" dy="0">From grounded answers to governed action</tspan>
+</text>
+<text id="scenario-overview-1" x="40" y="105" font-family="Arial, Helvetica, sans-serif" font-size="20" fill="#000000" data-max-width="1100">
+<tspan x="40" dy="0">One hotel story  /  Three agents  /  Two demonstrations</tspan>
+</text>
+<rect id="scenario-overview-2" x="40" y="140" width="540" height="360" rx="14" fill="none" stroke="#0078D4" stroke-width="2"/>
+<rect id="scenario-overview-3" x="620" y="140" width="540" height="360" rx="14" fill="none" stroke="#5C2D91" stroke-width="2"/>
+<text id="scenario-overview-4" x="65" y="188" font-family="Arial, Helvetica, sans-serif" font-size="28" fill="#000000" data-max-width="490">
+<tspan x="65" dy="0">01  Customer service</tspan>
+</text>
+<text id="scenario-overview-5" x="645" y="188" font-family="Arial, Helvetica, sans-serif" font-size="28" fill="#000000" data-max-width="490">
+<tspan x="645" dy="0">02  Payroll funding</tspan>
+</text>
+<text id="scenario-overview-6" x="65" y="232" font-family="Arial, Helvetica, sans-serif" font-size="22" fill="#000000" data-max-width="490">
+<tspan x="65" dy="0">Hotel Guest Services</tspan>
+</text>
+<text id="scenario-overview-7" x="645" y="232" font-family="Arial, Helvetica, sans-serif" font-size="22" fill="#000000" data-max-width="490">
+<tspan x="645" dy="0">Hotel Payroll + Hotel Treasurer</tspan>
+</text>
+<rect id="scenario-overview-8" x="65" y="265" width="490" height="50" rx="14" fill="#CFE4FA" stroke="#0078D4" stroke-width="2"/>
+<text id="scenario-overview-9" x="81" y="296" font-family="Arial, Helvetica, sans-serif" font-size="21" fill="#000000" data-max-width="460">
+<tspan x="81" dy="0">Understand the guest&#x27;s request</tspan>
+</text>
+<polyline id="scenario-overview-10" points="310,317 310,328" fill="none" stroke="#0078D4" stroke-width="2.5" stroke-linejoin="round" marker-end="url(#arrow)"/>
+<rect id="scenario-overview-11" x="65" y="330" width="490" height="50" rx="14" fill="#CFE4FA" stroke="#0078D4" stroke-width="2"/>
+<text id="scenario-overview-12" x="81" y="361" font-family="Arial, Helvetica, sans-serif" font-size="21" fill="#000000" data-max-width="460">
+<tspan x="81" dy="0">Consult Foundry IQ, Fabric IQ, Work IQ</tspan>
+</text>
+<polyline id="scenario-overview-13" points="310,382 310,393" fill="none" stroke="#0078D4" stroke-width="2.5" stroke-linejoin="round" marker-end="url(#arrow)"/>
+<rect id="scenario-overview-14" x="65" y="395" width="490" height="50" rx="14" fill="#CFE4FA" stroke="#0078D4" stroke-width="2"/>
+<text id="scenario-overview-15" x="81" y="426" font-family="Arial, Helvetica, sans-serif" font-size="21" fill="#000000" data-max-width="460">
+<tspan x="81" dy="0">Explain grounded options with citations</tspan>
+</text>
+<rect id="scenario-overview-16" x="645" y="265" width="490" height="50" rx="14" fill="#E8DAEF" stroke="#5C2D91" stroke-width="2"/>
+<text id="scenario-overview-17" x="661" y="296" font-family="Arial, Helvetica, sans-serif" font-size="21" fill="#000000" data-max-width="460">
+<tspan x="661" dy="0">Identify a USD 15,000 funding shortfall</tspan>
+</text>
+<polyline id="scenario-overview-18" points="890,317 890,328" fill="none" stroke="#5C2D91" stroke-width="2.5" stroke-linejoin="round" marker-end="url(#arrow)"/>
+<rect id="scenario-overview-19" x="645" y="330" width="490" height="50" rx="14" fill="#E8DAEF" stroke="#5C2D91" stroke-width="2"/>
+<text id="scenario-overview-20" x="661" y="361" font-family="Arial, Helvetica, sans-serif" font-size="21" fill="#000000" data-max-width="460">
+<tspan x="661" dy="0">Coordinate with an authorized human</tspan>
+</text>
+<polyline id="scenario-overview-21" points="890,382 890,393" fill="none" stroke="#5C2D91" stroke-width="2.5" stroke-linejoin="round" marker-end="url(#arrow)"/>
+<rect id="scenario-overview-22" x="645" y="395" width="490" height="50" rx="14" fill="#E8DAEF" stroke="#5C2D91" stroke-width="2"/>
+<text id="scenario-overview-23" x="661" y="426" font-family="Arial, Helvetica, sans-serif" font-size="21" fill="#000000" data-max-width="460">
+<tspan x="661" dy="0">Execute one approved synthetic transfer</tspan>
+</text>
+<text id="scenario-overview-24" x="65" y="484" font-family="Arial, Helvetica, sans-serif" font-size="19" fill="#000000" data-max-width="490">
+<tspan x="65" dy="0">1 agent  |  Context before answers</tspan>
+</text>
+<text id="scenario-overview-25" x="645" y="484" font-family="Arial, Helvetica, sans-serif" font-size="19" fill="#000000" data-max-width="490">
+<tspan x="645" dy="0">2 agents  |  Approval before effects</tspan>
+</text>
+<text id="scenario-overview-26" x="40" y="538" font-family="Arial, Helvetica, sans-serif" font-size="18" fill="#000000" data-max-width="1100">
+<tspan x="40" dy="0">Illustrative scenario flow, not a live transcript or an unattended scheduler.</tspan>
+</text>
+</svg>
