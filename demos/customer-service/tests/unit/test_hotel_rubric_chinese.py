@@ -35,7 +35,8 @@ def test_chinese_rubric_preserves_english_structure_and_scoring() -> None:
         assert description.startswith("始终适用。") == original["always_applicable"]
         assert ("硬性门槛" in description) == ("Hard gate:" in original["description"])
         if original["weight"] == 3 or original["id"] in {
-            "property_attribution_date_and_citations", "exact_record_full_history_lookup",
+            "property_attribution_date_and_citations",
+            "exact_record_full_history_lookup",
         }:
             assert "得 3 分" in description
     assert re.search(r"[\u4e00-\u9fff]", chinese["description"])
@@ -49,16 +50,28 @@ def test_chinese_translation_retains_regulatory_references_and_operational_contr
     }
     references = {
         "privacy_and_data_safety": [
-            "GDPR", "5、6、12 至 22 及 32", "CCPA/CPRA", "1798.100",
+            "GDPR",
+            "5、6、12 至 22 及 32",
+            "CCPA/CPRA",
+            "1798.100",
         ],
         "payment_card_and_financial_data_protection": [
-            "PCI DSS v4.0.1", "不是法律法规", "CVV/CVC", "PIN",
+            "PCI DSS v4.0.1",
+            "不是法律法规",
+            "CVV/CVC",
+            "PIN",
         ],
         "transparent_lodging_prices_and_fees": [
-            "FTC", "16 CFR Part 464", "2025 年 5 月 12 日",
+            "FTC",
+            "16 CFR Part 464",
+            "2025 年 5 月 12 日",
         ],
         "accessible_and_nondiscriminatory_service": [
-            "ADA", "28 CFR Part 36", "36.302(e)", "36.302(c)", "42 USC 2000a",
+            "ADA",
+            "28 CFR Part 36",
+            "36.302(e)",
+            "36.302(c)",
+            "42 USC 2000a",
         ],
         "cancellation_refund_and_consumer_rights": ["24 小时", "当地时区"],
         "mail_recipient_integrity": ["To", "Cc", "Bcc", "Internet Message ID"],

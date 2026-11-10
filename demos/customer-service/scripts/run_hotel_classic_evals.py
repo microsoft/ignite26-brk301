@@ -18,8 +18,7 @@ ROOT = Path(__file__).resolve().parents[1]
 NAME = "hotel-servicing-classic-evals"
 REFERENCE_EVAL = "eval_f801b4c226ef4db5a3cffd872a263e4c"
 ENDPOINT = (
-    "https://replace-foundry-account.services.ai.azure.com"
-    "/api/projects/replace-foundry-project"
+    "https://replace-foundry-account.services.ai.azure.com/api/projects/replace-foundry-project"
 )
 AGENT = "hotel-servicing-agent"
 VERSION = "8"
@@ -53,8 +52,16 @@ def write_json(path: Path, value: Any) -> None:
 
 def az_rest(method: str, url: str, body: dict[str, Any] | None = None) -> dict[str, Any]:
     command = [
-        "az", "rest", "--method", method, "--url", url,
-        "--resource", "https://ai.azure.com", "--output", "json",
+        "az",
+        "rest",
+        "--method",
+        method,
+        "--url",
+        url,
+        "--resource",
+        "https://ai.azure.com",
+        "--output",
+        "json",
     ]
     if body is not None:
         # File-backed bodies also avoid macOS's command-line argument size limit.
@@ -94,30 +101,35 @@ def source_tool_definitions() -> list[dict[str, Any]]:
             if not isinstance(handler, ast.Attribute):
                 raise ValueError(f"Unexpected function registration in {path}")
             function = next(
-                item for item in ast.walk(tree)
+                item
+                for item in ast.walk(tree)
                 if isinstance(item, ast.FunctionDef | ast.AsyncFunctionDef)
                 and item.name == handler.attr
             )
             arguments = function.args.args[1:]
             optional = (
-                {argument.arg for argument in arguments[-len(function.args.defaults):]}
-                if function.args.defaults else set()
+                {argument.arg for argument in arguments[-len(function.args.defaults) :]}
+                if function.args.defaults
+                else set()
             )
             properties = {}
             for argument in arguments:
                 annotation = ast.unparse(argument.annotation) if argument.annotation else ""
                 properties[argument.arg] = annotation_schema(annotation)
-            definitions.append({
-                "type": "function",
-                "name": name,
-                "description": description,
-                "parameters": {
-                    "type": "object",
-                    "properties": properties,
-                    "required": [argument.arg for argument in arguments
-                                 if argument.arg not in optional],
-                },
-            })
+            definitions.append(
+                {
+                    "type": "function",
+                    "name": name,
+                    "description": description,
+                    "parameters": {
+                        "type": "object",
+                        "properties": properties,
+                        "required": [
+                            argument.arg for argument in arguments if argument.arg not in optional
+                        ],
+                    },
+                }
+            )
     if len({tool["name"] for tool in definitions}) != 7:
         raise ValueError("Expected all seven registered hotel tools")
     return definitions
@@ -134,7 +146,11 @@ def annotation_schema(annotation: str) -> dict[str, Any]:
             raise ValueError("Unexpected PropertyId alias")
         return {"type": "string", "enum": list(ast.literal_eval(alias.value.slice))}
     types = {
-        "str": "string", "bool": "boolean", "int": "integer", "float": "number", "None": "null",
+        "str": "string",
+        "bool": "boolean",
+        "int": "integer",
+        "float": "number",
+        "None": "null",
     }
     if annotation in types:
         return {"type": types[annotation]}
@@ -175,7 +191,10 @@ def capture(endpoint: str, version: str) -> list[dict[str, Any]]:
     cases = load_cases()
     tools = source_tool_definitions()
     manifest = {
-        "endpoint": endpoint, "agent_name": AGENT, "agent_version": version, "cases": cases,
+        "endpoint": endpoint,
+        "agent_name": AGENT,
+        "agent_version": version,
+        "cases": cases,
     }
     manifest_path = OUTPUT / "capture-target.json"
     if manifest_path.exists():
@@ -207,7 +226,10 @@ def capture(endpoint: str, version: str) -> list[dict[str, Any]]:
         if reference.get("name") != AGENT or reference.get("version") != version:
             raise ValueError(f"Wrong deployed agent in actual response: {case['case_id']}")
         mutating_tools = {
-            "manage_reservation", "send_email", "reply_to_email", "query_work_context",
+            "manage_reservation",
+            "send_email",
+            "reply_to_email",
+            "query_work_context",
         }
         if any(
             event.get("type") == "function_call" and event.get("name") in mutating_tools
@@ -244,7 +266,9 @@ def evaluation_body(reference: dict[str, Any], version: str) -> dict[str, Any]:
         },
         "testing_criteria": criteria,
         "metadata": {
-            "agent_name": AGENT, "agent_version": version, "reference_eval": REFERENCE_EVAL,
+            "agent_name": AGENT,
+            "agent_version": version,
+            "reference_eval": REFERENCE_EVAL,
         },
     }
 
@@ -258,8 +282,10 @@ def prepare_evaluation(endpoint: str, version: str) -> str:
     if existing.exists():
         evaluation = json.loads(existing.read_text(encoding="utf-8"))
         live = az_rest("get", f"{endpoint}/openai/v1/evals/{evaluation['id']}")
-        actual = [{k: v for k, v in criterion.items() if k != "id"}
-                  for criterion in live["testing_criteria"]]
+        actual = [
+            {k: v for k, v in criterion.items() if k != "id"}
+            for criterion in live["testing_criteria"]
+        ]
         if live["name"] != NAME or actual != body["testing_criteria"]:
             raise ValueError("Existing native evaluation metrics differ from the reference")
         return str(evaluation["id"])
@@ -277,8 +303,12 @@ def native_tool_skips(item: dict[str, Any]) -> set[int]:
     if not isinstance(parsed, dict):
         raise ValueError("Tool-skip evidence must be a captured response object")
     observed = parsed.get("observed_response_output")
-    if not isinstance(observed, list) or not observed or not all(
-        isinstance(output, dict) and output.get("type") == "message" for output in observed
+    if (
+        not isinstance(observed, list)
+        or not observed
+        or not all(
+            isinstance(output, dict) and output.get("type") == "message" for output in observed
+        )
     ):
         return set()
     results = item.get("results") or []
@@ -290,9 +320,12 @@ def native_tool_skips(item: dict[str, Any]) -> set[int]:
         reason = result.get("reason")
         properties = result.get("properties") or {}
         if (
-            name not in TOOL_METRICS or metric != name
-            or result.get("score") is not None or result.get("passed") is not None
-            or result.get("error") or not isinstance(reason, str)
+            name not in TOOL_METRICS
+            or metric != name
+            or result.get("score") is not None
+            or result.get("passed") is not None
+            or result.get("error")
+            or not isinstance(reason, str)
             or not reason.startswith("Not applicable:")
         ):
             continue
@@ -310,9 +343,13 @@ def native_tool_skips(item: dict[str, Any]) -> set[int]:
         metric = result.get("metric")
         reason = result.get("reason")
         if (
-            result.get("name") == "tool_use_quality" and metric in composite_skips
-            and result.get("score") is None and result.get("passed") is None
-            and not result.get("error") and isinstance(reason, str) and reason.strip()
+            result.get("name") == "tool_use_quality"
+            and metric in composite_skips
+            and result.get("score") is None
+            and result.get("passed") is None
+            and not result.get("error")
+            and isinstance(reason, str)
+            and reason.strip()
         ):
             skipped.add(index)
     return skipped
@@ -327,7 +364,8 @@ def summarize(items: list[dict[str, Any]]) -> dict[str, Any]:
         skipped_metrics: list[str] = []
         present = {result.get("name") for result in results}
         incomplete = (
-            not set(METRICS).issubset(present) or bool(item.get("error"))
+            not set(METRICS).issubset(present)
+            or bool(item.get("error"))
             or item.get("status", "completed") != "completed"
         )
         for index, result in enumerate(results):
@@ -340,7 +378,8 @@ def summarize(items: list[dict[str, Any]]) -> dict[str, Any]:
             score = result.get("score")
             scored = (
                 name in METRICS
-                and isinstance(score, int | float) and not isinstance(score, bool)
+                and isinstance(score, int | float)
+                and not isinstance(score, bool)
                 and math.isfinite(score)
                 and isinstance(result.get("passed"), bool)
                 and bool(result.get("reason"))
@@ -352,18 +391,25 @@ def summarize(items: list[dict[str, Any]]) -> dict[str, Any]:
             valid = scored or not_applicable
             incomplete |= not valid
             key = (
-                "not_applicable" if not_applicable else
-                "incomplete" if not valid else "passed" if result["passed"] else "failed"
+                "not_applicable"
+                if not_applicable
+                else "incomplete"
+                if not valid
+                else "passed"
+                if result["passed"]
+                else "failed"
             )
             counts[key] += 1
-        rows.append({
-            "case_id": (item.get("datasource_item") or {}).get("case_id"),
-            "incomplete": incomplete,
-            "not_applicable_metrics": sorted(skipped_metrics),
-            "failed_metrics": sorted({
-                r["name"] for r in results if r.get("passed") is False and r.get("name")
-            }),
-        })
+        rows.append(
+            {
+                "case_id": (item.get("datasource_item") or {}).get("case_id"),
+                "incomplete": incomplete,
+                "not_applicable_metrics": sorted(skipped_metrics),
+                "failed_metrics": sorted(
+                    {r["name"] for r in results if r.get("passed") is False and r.get("name")}
+                ),
+            }
+        )
     return {
         "total": len(rows),
         "incomplete": sum(row["incomplete"] for row in rows),
@@ -396,20 +442,25 @@ def download(endpoint: str, eval_id: str, run_id: str) -> list[dict[str, Any]]:
     return items
 
 
-def run(
-    endpoint: str, eval_id: str, data_source: dict[str, Any], version: str
-) -> str:
+def run(endpoint: str, eval_id: str, data_source: dict[str, Any], version: str) -> str:
     body = {
-        "name": NAME, "data_source": data_source,
+        "name": NAME,
+        "data_source": data_source,
         "metadata": {"agent_name": AGENT, "agent_version": version, "trigger_type": "oneoff"},
     }
     write_json(OUTPUT / "run-request.json", body)
     result = az_rest("post", f"{endpoint}/openai/v1/evals/{eval_id}/runs", body)
     run_id = str(result["id"])
     write_json(OUTPUT / f"{run_id}-created.json", result)
-    write_json(OUTPUT / "run.json", {
-        "eval_id": eval_id, "run_id": run_id, "name": NAME, "agent_version": version,
-    })
+    write_json(
+        OUTPUT / "run.json",
+        {
+            "eval_id": eval_id,
+            "run_id": run_id,
+            "name": NAME,
+            "agent_version": version,
+        },
+    )
     return run_id
 
 
@@ -426,14 +477,22 @@ def poll(endpoint: str, eval_id: str, run_id: str, timeout: int, version: str = 
             raise TimeoutError("Native evaluation remains active; IDs saved in run.json")
         time.sleep(30)
     summary = summarize(download(endpoint, eval_id, run_id))
-    summary.update({
-        "eval_id": eval_id, "run_id": run_id, "status": status["status"],
-        "report_url": status.get("report_url"), "result_counts": status.get("result_counts"),
-        "agent_name": AGENT, "agent_version": version,
-    })
+    summary.update(
+        {
+            "eval_id": eval_id,
+            "run_id": run_id,
+            "status": status["status"],
+            "report_url": status.get("report_url"),
+            "result_counts": status.get("result_counts"),
+            "agent_name": AGENT,
+            "agent_version": version,
+        }
+    )
     summary["execution_complete"] = (
-        status["status"] == "completed" and summary["total"] == 20
-        and summary["incomplete"] == 0 and not (status.get("result_counts") or {}).get("errored")
+        status["status"] == "completed"
+        and summary["total"] == 20
+        and summary["incomplete"] == 0
+        and not (status.get("result_counts") or {}).get("errored")
         and {row["case_id"] for row in summary["rows"]}
         == {case["case_id"] for case in load_cases()}
     )
@@ -473,7 +532,10 @@ def main() -> None:
     else:
         manifest = json.loads((OUTPUT / "run.json").read_text(encoding="utf-8"))
         poll(
-            args.endpoint, manifest["eval_id"], manifest["run_id"], args.timeout,
+            args.endpoint,
+            manifest["eval_id"],
+            manifest["run_id"],
+            args.timeout,
             manifest["agent_version"],
         )
 

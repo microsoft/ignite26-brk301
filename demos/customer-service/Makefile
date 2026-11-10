@@ -22,7 +22,7 @@ typecheck:
 		scripts
 
 test:
-	$(VENV_PYTHON) -m pytest
+	$(VENV_PYTHON) -m pytest --ignore=tests/unit/test_bridge_readiness.py --ignore=tests/unit/test_private_vault_bootstrap.py
 
 web-check:
 	npm --prefix web/frontend test

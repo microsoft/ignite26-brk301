@@ -43,13 +43,26 @@ def completed_response() -> dict[str, Any]:
     return {
         "status": "completed",
         "output": [
-            {"type": "function_call", "name": "search_hotel_knowledge", "call_id": "call_real",
-             "arguments": '{"question":"parking"}'},
-            {"type": "function_call_output", "call_id": "call_real",
-             "output": '{"answer":"Valet USD 52 nightly","references":[{"title":"Real source"}]}'},
-            {"type": "message", "role": "assistant", "content": [
-                {"type": "output_text", "text": "Valet parking costs USD 52 nightly."},
-            ]},
+            {
+                "type": "function_call",
+                "name": "search_hotel_knowledge",
+                "call_id": "call_real",
+                "arguments": '{"question":"parking"}',
+            },
+            {
+                "type": "function_call_output",
+                "call_id": "call_real",
+                "output": json.dumps(
+                    {"answer": "Valet USD 52 nightly", "references": [{"title": "Real source"}]}
+                ),
+            },
+            {
+                "type": "message",
+                "role": "assistant",
+                "content": [
+                    {"type": "output_text", "text": "Valet parking costs USD 52 nightly."},
+                ],
+            },
         ],
     }
 
@@ -73,17 +86,23 @@ def test_no_tool_evidence_is_not_fabricated() -> None:
     response["output"] = response["output"][2:]
     item = build_item({"case_id": "example", "query": "Clarify dates?"}, response, [])
     assert json.loads(item["grounding_context"]) == {
-        "observed_user_query": "Clarify dates?", "observed_tool_outputs": [],
+        "observed_user_query": "Clarify dates?",
+        "observed_tool_outputs": [],
     }
     assert json.loads(item["evidence_response"])["observed_response_output"] == response["output"]
 
 
 def test_reference_metrics_and_initialization_are_copied_without_mutation() -> None:
     criteria = [
-        {"id": f"generated-{name}", "name": name, "type": "azure_ai_evaluator",
-         "evaluator_name": f"builtin.{name}", "evaluator_version": "",
-         "data_mapping": {"response": "{{item.evidence_response}}"},
-         "initialization_parameters": {"deployment_name": "gpt-5.4-mini"}}
+        {
+            "id": f"generated-{name}",
+            "name": name,
+            "type": "azure_ai_evaluator",
+            "evaluator_name": f"builtin.{name}",
+            "evaluator_version": "",
+            "data_mapping": {"response": "{{item.evidence_response}}"},
+            "initialization_parameters": {"deployment_name": "gpt-5.4-mini"},
+        }
         for name in METRICS
     ]
     reference: dict[str, Any] = {
@@ -95,8 +114,7 @@ def test_reference_metrics_and_initialization_are_copied_without_mutation() -> N
     assert body["name"] == NAME
     assert reference == original
     assert body["testing_criteria"] == [
-        {key: value for key, value in criterion.items() if key != "id"}
-        for criterion in criteria
+        {key: value for key, value in criterion.items() if key != "id"} for criterion in criteria
     ]
     reference["testing_criteria"].pop()
     with pytest.raises(ValueError, match="metric list"):
@@ -138,10 +156,15 @@ def test_composite_metric_subscores_remain_separate() -> None:
         {"name": name, "metric": name, "score": 5, "passed": True, "reason": "Observed evidence."}
         for name in METRICS
     ]
-    results.append({
-        "name": "tool_use_quality", "metric": "tool_input_accuracy",
-        "score": 1, "passed": False, "reason": "Observed incorrect argument.",
-    })
+    results.append(
+        {
+            "name": "tool_use_quality",
+            "metric": "tool_input_accuracy",
+            "score": 1,
+            "passed": False,
+            "reason": "Observed incorrect argument.",
+        }
+    )
     summary = summarize([{"results": results}])
     assert summary["metrics"]["tool_use_quality"]["passed"] == 1
     assert summary["metrics"]["tool_use_quality/tool_input_accuracy"]["failed"] == 1
@@ -160,20 +183,32 @@ def no_tool_skip_item() -> dict[str, Any]:
     composite["properties"] = {
         "failed_evaluators": [],
         "skipped_evaluators": [
-            "tool_call_accuracy", "tool_selection", "tool_input_accuracy",
-            "tool_output_utilization", "tool_call_success",
+            "tool_call_accuracy",
+            "tool_selection",
+            "tool_input_accuracy",
+            "tool_output_utilization",
+            "tool_call_success",
         ],
     }
-    results.append({
-        "name": "tool_use_quality", "metric": "tool_selection",
-        "score": None, "passed": None, "reason": "No tools were selected.",
-    })
+    results.append(
+        {
+            "name": "tool_use_quality",
+            "metric": "tool_selection",
+            "score": None,
+            "passed": None,
+            "reason": "No tools were selected.",
+        }
+    )
     return {
         "datasource_item": {
             "case_id": "clarification",
-            "evidence_response": json.dumps({"observed_response_output": [
-                {"type": "message", "role": "assistant", "content": []},
-            ]}),
+            "evidence_response": json.dumps(
+                {
+                    "observed_response_output": [
+                        {"type": "message", "role": "assistant", "content": []},
+                    ]
+                }
+            ),
         },
         "results": results,
     }
@@ -198,9 +233,11 @@ def test_missing_or_conflicting_tool_evidence_cannot_turn_null_scores_into_skips
     if output_type is None:
         item["datasource_item"].pop("evidence_response")
     else:
-        item["datasource_item"]["evidence_response"] = json.dumps({
-            "observed_response_output": [{"type": output_type}],
-        })
+        item["datasource_item"]["evidence_response"] = json.dumps(
+            {
+                "observed_response_output": [{"type": output_type}],
+            }
+        )
     summary = summarize([item])
     assert summary["incomplete"] == 1
     assert summary["not_applicable"] == 0
@@ -236,10 +273,15 @@ def test_native_tool_skip_does_not_hide_an_evaluator_error() -> None:
 
 def test_native_tool_skip_cannot_mask_an_invalid_duplicate_result() -> None:
     item = no_tool_skip_item()
-    item["results"].append({
-        "name": "tool_call_accuracy", "score": None, "passed": None,
-        "reason": "Not applicable: no tool calls.", "error": {"message": "Judge failed"},
-    })
+    item["results"].append(
+        {
+            "name": "tool_call_accuracy",
+            "score": None,
+            "passed": None,
+            "reason": "Not applicable: no tool calls.",
+            "error": {"message": "Judge failed"},
+        }
+    )
     summary = summarize([item])
     assert summary["incomplete"] == 1
     assert summary["metrics"]["tool_call_accuracy"]["incomplete"] == 1

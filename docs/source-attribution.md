@@ -28,6 +28,10 @@ public release.
   Foundry cache/results metadata, browser automation, email-cleanup hooks,
   and the private offline dependency archive workflow.
 - Added a normal payroll source-build Dockerfile and separate validation jobs.
+- Removed the obsolete `test_data_agent_publication.py` suite, which extracted a
+  no-longer-present notebook helper and asserted the superseded T-SQL example
+  contract. The current native-source publication/readiness tests remain in
+  `test_data_agent_runtime_publish.py`; no runtime publication gate was removed.
 - Replaced the source landing pages with a customer-facing session narrative and
   setup boundaries. No new cloud deployment or service upgrade is implied.
 

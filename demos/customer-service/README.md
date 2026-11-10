@@ -58,9 +58,9 @@ if they were registered identities.
 Generate and check a small synthetic dataset without cloud access:
 
 ```powershell
-.\.venv\Scripts\python.exe scripts\generate_hotel_data.py --scale demo
-.\.venv\Scripts\python.exe scripts\validate_hotel_data.py
-.\.venv\Scripts\python.exe scripts\setup_foundry_iq.py --dry-run
+.\.venv\Scripts\python.exe scripts\generate_hotel_data.py --scale demo --output .state/data --docs-output .state/docs
+.\.venv\Scripts\python.exe scripts\validate_hotel_data.py --output .state/data --docs-output .state/docs
+.\.venv\Scripts\python.exe scripts\setup_foundry_iq.py --dry-run --corpus-dir .state/docs
 ```
 
 Cloud provisioning remains explicit. The import does not verify a new tenant,

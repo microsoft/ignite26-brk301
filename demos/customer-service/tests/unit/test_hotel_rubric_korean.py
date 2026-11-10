@@ -47,17 +47,32 @@ def test_korean_translation_retains_regulatory_references_and_operational_contra
     }
     references = {
         "privacy_and_data_safety": [
-            "GDPR", "제5조", "제6조", "제12~22조", "제32조", "CCPA/CPRA", "1798.100",
+            "GDPR",
+            "제5조",
+            "제6조",
+            "제12~22조",
+            "제32조",
+            "CCPA/CPRA",
+            "1798.100",
         ],
         "payment_card_and_financial_data_protection": [
-            "PCI DSS v4.0.1", "법률이 아닙니다", "CVV/CVC", "PIN",
+            "PCI DSS v4.0.1",
+            "법률이 아닙니다",
+            "CVV/CVC",
+            "PIN",
         ],
         "transparent_lodging_prices_and_fees": [
-            "FTC", "16 CFR Part 464", "2025년 5월 12일",
+            "FTC",
+            "16 CFR Part 464",
+            "2025년 5월 12일",
         ],
         "accessible_and_nondiscriminatory_service": [
-            "ADA Title III", "28 CFR Part 36", "36.302(e)", "36.302(c)",
-            "Civil Rights Act Title II", "42 USC 2000a",
+            "ADA Title III",
+            "28 CFR Part 36",
+            "36.302(e)",
+            "36.302(c)",
+            "Civil Rights Act Title II",
+            "42 USC 2000a",
         ],
         "cancellation_refund_and_consumer_rights": ["24시간", "현지 시간대"],
         "mail_recipient_integrity": ["To", "Cc", "Bcc", "Internet Message ID"],

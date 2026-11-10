@@ -6,8 +6,8 @@ import os
 import shutil
 import subprocess
 from collections.abc import Sequence
-from http.client import HTTPMessage, HTTPResponse
-from typing import BinaryIO
+from http.client import HTTPMessage
+from typing import IO, BinaryIO
 from urllib.error import HTTPError
 from urllib.parse import urlsplit
 from urllib.request import HTTPRedirectHandler, Request, build_opener
@@ -17,7 +17,7 @@ class NoRedirect(HTTPRedirectHandler):
     def redirect_request(
         self,
         req: Request,
-        fp: HTTPResponse,
+        fp: IO[bytes],
         code: int,
         msg: str,
         headers: HTTPMessage,
