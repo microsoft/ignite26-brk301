@@ -7,12 +7,12 @@ from types import SimpleNamespace
 from unittest.mock import Mock, patch
 
 import httpx
-from finance_agents.ledger import (
+from payroll_agents.ledger import (
     AgentRole, Ledger, LedgerConfig, Snapshot, SQLiteStateStore,
 )
-from finance_agents.projection import ProjectionRefreshError
-from finance_agents.projection_worker import drain_projection_queue, refresh_runtime_projection
-from finance_agents.runtime import FinanceRuntime, authenticated_decision
+from payroll_agents.projection import ProjectionRefreshError
+from payroll_agents.projection_worker import drain_projection_queue, refresh_runtime_projection
+from payroll_agents.runtime import FinanceRuntime, authenticated_decision
 
 
 class ProjectionWorkerTests(unittest.TestCase):
@@ -51,7 +51,7 @@ class ProjectionWorkerTests(unittest.TestCase):
             "committed_manifest": {"projection_state": "complete"},
         }
         self.config_patch = patch(
-            "finance_agents.projection_worker.ProjectionConfig.from_output",
+            "payroll_agents.projection_worker.ProjectionConfig.from_output",
             return_value=self.config,
         )
         self.config_patch.start()
@@ -73,9 +73,9 @@ class ProjectionWorkerTests(unittest.TestCase):
             self.assertIn("expected_projection_etag", entry["projection_progress"])
             return self.result
 
-        with patch("finance_agents.projection_worker.read_projection_manifest",
+        with patch("payroll_agents.projection_worker.read_projection_manifest",
                    return_value=None), patch(
-            "finance_agents.projection_worker.refresh_projection", side_effect=execute,
+            "payroll_agents.projection_worker.refresh_projection", side_effect=execute,
         ) as run:
             self.assertTrue(self.refresh()["source_etag_current"])
             self.assertTrue(self.refresh()["source_etag_current"])
@@ -86,9 +86,9 @@ class ProjectionWorkerTests(unittest.TestCase):
         error = ProjectionRefreshError(
             "Job status unknown", {"job_url": "https://api.fabric.microsoft.com/job"},
         )
-        with patch("finance_agents.projection_worker.read_projection_manifest",
+        with patch("payroll_agents.projection_worker.read_projection_manifest",
                    return_value={"source_etag": "previous-real-etag"}), patch(
-            "finance_agents.projection_worker.refresh_projection", side_effect=error,
+            "payroll_agents.projection_worker.refresh_projection", side_effect=error,
         ) as run:
             with self.assertRaises(ProjectionRefreshError):
                 self.refresh()
@@ -121,9 +121,9 @@ class ProjectionWorkerTests(unittest.TestCase):
             Snapshot("actual-ledger-etag", self.state),
             Snapshot("new-ledger-etag", self.state),
         ]
-        with patch("finance_agents.projection_worker.read_projection_manifest",
+        with patch("payroll_agents.projection_worker.read_projection_manifest",
                    return_value=None), patch(
-            "finance_agents.projection_worker.refresh_projection", return_value=self.result,
+            "payroll_agents.projection_worker.refresh_projection", return_value=self.result,
         ):
             self.assertFalse(self.refresh()["source_etag_current"])
         entry = next(iter(self.journal.read().state["turns"].values()))
@@ -145,11 +145,11 @@ class ProjectionWorkerTests(unittest.TestCase):
             self.assertIsNone(response.body)
             return None
 
-        with patch("finance_agents.projection_worker.httpx.Client", return_value=http), patch(
-            "finance_agents.projection_worker.read_projection_manifest",
+        with patch("payroll_agents.projection_worker.httpx.Client", return_value=http), patch(
+            "payroll_agents.projection_worker.read_projection_manifest",
             side_effect=read_manifest,
         ), patch(
-            "finance_agents.projection_worker.refresh_projection", return_value=self.result,
+            "payroll_agents.projection_worker.refresh_projection", return_value=self.result,
         ):
             self.assertTrue(self.refresh()["source_etag_current"])
 
@@ -178,9 +178,9 @@ class ProjectionWorkerTests(unittest.TestCase):
     def test_committed_transaction_is_a_durable_queue_without_a_second_ledger_write(self):
         ledger = self.commit_transfer()
         before = ledger.store.read()
-        with patch("finance_agents.projection_worker.read_projection_manifest",
+        with patch("payroll_agents.projection_worker.read_projection_manifest",
                    return_value=None), patch(
-            "finance_agents.projection_worker.refresh_projection",
+            "payroll_agents.projection_worker.refresh_projection",
             side_effect=self.complete_refresh,
         ) as run:
             result = drain_projection_queue(self.runtime, self.bindings, self.store, self.journal)
@@ -198,7 +198,7 @@ class ProjectionWorkerTests(unittest.TestCase):
         )
 
     def test_no_transfer_means_no_notebook_or_acknowledgement(self):
-        with patch("finance_agents.projection_worker.refresh_projection") as run:
+        with patch("payroll_agents.projection_worker.refresh_projection") as run:
             result = drain_projection_queue(self.runtime, self.bindings, self.store, self.journal)
             self.assertEqual(result["status"], "idle")
             run.assert_not_called()
@@ -208,9 +208,9 @@ class ProjectionWorkerTests(unittest.TestCase):
         ledger = self.commit_transfer()
         before = ledger.snapshot()
         error = ProjectionRefreshError("Unknown job", {"job_url": "https://api.fabric.microsoft.com/job"})
-        with patch("finance_agents.projection_worker.read_projection_manifest",
+        with patch("payroll_agents.projection_worker.read_projection_manifest",
                    return_value=None), patch(
-            "finance_agents.projection_worker.refresh_projection", side_effect=error,
+            "payroll_agents.projection_worker.refresh_projection", side_effect=error,
         ) as run:
             with self.assertRaises(ProjectionRefreshError):
                 drain_projection_queue(self.runtime, self.bindings, self.store, self.journal)
@@ -228,9 +228,9 @@ class ProjectionWorkerTests(unittest.TestCase):
             Snapshot("actual-ledger-etag", self.state),
             Snapshot("changed-etag", self.state),
         ]
-        with patch("finance_agents.projection_worker.read_projection_manifest",
+        with patch("payroll_agents.projection_worker.read_projection_manifest",
                    return_value=None), patch(
-            "finance_agents.projection_worker.refresh_projection",
+            "payroll_agents.projection_worker.refresh_projection",
             side_effect=self.complete_refresh,
         ):
             result = drain_projection_queue(self.runtime, self.bindings, self.store, self.journal)
@@ -265,9 +265,9 @@ class ProjectionWorkerTests(unittest.TestCase):
             self.assertTrue(self.journal.compare_and_swap(snapshot.version, snapshot.state))
             return result
 
-        with patch("finance_agents.projection_worker.read_projection_manifest",
+        with patch("payroll_agents.projection_worker.read_projection_manifest",
                    return_value=None), patch(
-            "finance_agents.projection_worker.refresh_projection", side_effect=omit_transaction,
+            "payroll_agents.projection_worker.refresh_projection", side_effect=omit_transaction,
         ):
             with self.assertRaisesRegex(RuntimeError, "exact queued transaction"):
                 drain_projection_queue(self.runtime, self.bindings, self.store, self.journal)
@@ -279,9 +279,9 @@ class ProjectionWorkerTests(unittest.TestCase):
         def incomplete_metadata(envelope, **kwargs):
             return {**self.complete_refresh(envelope, **kwargs), "metadata_sync_pending": True}
 
-        with patch("finance_agents.projection_worker.read_projection_manifest",
+        with patch("payroll_agents.projection_worker.read_projection_manifest",
                    return_value=None), patch(
-            "finance_agents.projection_worker.refresh_projection", side_effect=incomplete_metadata,
+            "payroll_agents.projection_worker.refresh_projection", side_effect=incomplete_metadata,
         ):
             with self.assertRaisesRegex(RuntimeError, "verified complete capture"):
                 drain_projection_queue(self.runtime, self.bindings, self.store, self.journal)

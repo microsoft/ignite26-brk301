@@ -5,10 +5,14 @@ Services customer-service agent using Microsoft IQ, then bring Hotel Payroll
 and Hotel Treasurer into the same Microsoft Teams group chat. These two agents
 with accounts coordinate payroll funding with human approval through Agent 365.
 
-| Demo | What you see | Source |
+| Agent | Role | Demo |
 | --- | --- | --- |
-| Customer-service agent | Hotel Guest Services combines Foundry IQ policy and property knowledge, Fabric IQ operational data, and Work IQ workplace context. | [Customer-service agent](demos/customer-service-agent/README.md) |
-| Payroll agents | Hotel Payroll identifies a funding shortfall; Hotel Treasurer coordinates approval, executes the authorized synthetic transfer, and reports the result in their shared chat. | [Payroll agents](demos/payroll-agents/README.md) |
+| Hotel Guest Services | Answers customer-service questions using Foundry IQ policy and property knowledge, Fabric IQ operational data, and Work IQ workplace context. | [Customer-service agent](demos/customer-service-agent/README.md) |
+| Hotel Payroll | Identifies the payroll funding shortfall and requests funding in the shared chat. | [Payroll funding](demos/payroll-agents/README.md) |
+| Hotel Treasurer | Coordinates human approval, executes the authorized synthetic transfer, and reports the result. | [Payroll funding](demos/payroll-agents/README.md) |
+
+`payroll-agents` is the shared demo folder for Hotel Payroll and Hotel Treasurer;
+`payroll_agents` is its Python package name, not another agent.
 
 Start with the [session walkthrough](docs/demo-walkthrough.md), then read the
 [architecture](docs/architecture.md) and [setup guide](docs/setup.md).

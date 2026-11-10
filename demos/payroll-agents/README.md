@@ -1,9 +1,18 @@
-# Hotel Payroll and Hotel Treasurer
+# Payroll funding: Hotel Payroll and Hotel Treasurer
 
 **Act 2 of BRK301:** two independent agents with accounts, governed by Agent 365,
 collaborate in a Microsoft Teams group chat. Hotel Payroll identifies the
 shortfall; Hotel Treasurer coordinates human approval and executes the
 authorized synthetic transfer. See the [walkthrough](../../docs/demo-walkthrough.md).
+
+This folder is one shared payroll-funding demo with two agents, not an additional
+agent. The `payroll_agents` Python package hosts both roles under separate agent
+identities; the underscore is the Python spelling of the `payroll-agents` name.
+
+| Agent | Responsibility | Internal role key |
+| --- | --- | --- |
+| Hotel Payroll | Identify the payroll shortfall and request funding. | `hotel_finance` |
+| Hotel Treasurer | Coordinate human approval and execute the authorized synthetic transfer. | `banking_operations` |
 
 The seed is payroll USD 10,000, reserve USD 50,000, and a recorded USD 25,000
 obligation. An approved USD 15,000 transfer leaves payroll USD 25,000 and reserve
@@ -48,7 +57,7 @@ The public names are Hotel Payroll and Hotel Treasurer. Bind each to a distinct,
 manager-verified hire; do not reuse an operator identity.
 
 **Agents with accounts** is the customer-facing term. Local source paths and the
-`finance_agents` package use agent terminology. External resource names and
+`payroll_agents` package use agent terminology. External resource names and
 publication API fields remain unchanged for compatibility; they are not display
 names.
 

@@ -9,14 +9,14 @@ import jwt
 import httpx
 from microsoft_agents.activity.channel_id import ChannelId
 
-from finance_agents.ledger import (
+from payroll_agents.ledger import (
     AgentRole, Decision, DomainError, Ledger, LedgerConfig, Snapshot, SQLiteStateStore,
 )
-from finance_agents.communications import DeliveryRejected, DeliveryUncertain
-from finance_agents.demo_runs import DemoRuns
-from finance_agents.mcp_client import McpToolError
-from finance_agents.peer_routes import PeerRoutes
-from finance_agents.runtime import (
+from payroll_agents.communications import DeliveryRejected, DeliveryUncertain
+from payroll_agents.demo_runs import DemoRuns
+from payroll_agents.mcp_client import McpToolError
+from payroll_agents.peer_routes import PeerRoutes
+from payroll_agents.runtime import (
     APPROVAL_EXECUTE_MESSAGE, FABRIC_SCOPE, M365_SCOPE, PEER_TASK_REFERENCE,
     FinanceRuntime, approval_context_reference,
     authenticated_decision, authenticated_email_sender, execute_approved_request,
@@ -41,9 +41,9 @@ class RuntimeTests(unittest.TestCase):
             "FINANCE_MODEL_ENDPOINT": "https://finance.openai.azure.com",
         }
         with patch.dict("os.environ", environment), patch(
-            "finance_agents.runtime.ManagedIdentityCredential"
-        ), patch("finance_agents.runtime.httpx.AsyncClient"), patch(
-            "finance_agents.runtime.BlobStateStore.from_url"
+            "payroll_agents.runtime.ManagedIdentityCredential"
+        ), patch("payroll_agents.runtime.httpx.AsyncClient"), patch(
+            "payroll_agents.runtime.BlobStateStore.from_url"
         ):
             for role, name in (
                 ("hotel_finance", "Hotel Payroll"),
@@ -72,7 +72,7 @@ class RuntimeTests(unittest.TestCase):
             {"scp": "user_impersonation"},
         ):
             with self.subTest(override=override), self.assertLogs(
-                "finance_agents.runtime", level="ERROR"
+                "payroll_agents.runtime", level="ERROR"
             ), self.assertRaises(PermissionError):
                 runtime._validate_application_token(
                     jwt.encode({**claims, **override}, signing_key, algorithm="HS256"),
@@ -474,7 +474,7 @@ class RuntimeTests(unittest.TestCase):
                 "message": "SECRET_BODY Caller lacks Microsoft.CognitiveServices/accounts/AIServices/responses/write",
             },
         })
-        with self.assertLogs("finance_agents.runtime", level="ERROR") as logs:
+        with self.assertLogs("payroll_agents.runtime", level="ERROR") as logs:
             with self.assertRaises(httpx.HTTPStatusError):
                 require_service_success(response, "Foundry model")
         output = "\n".join(logs.output)
@@ -486,7 +486,7 @@ class RuntimeTests(unittest.TestCase):
         response = httpx.Response(
             500, request=httpx.Request("POST", "https://example.test"), text="SECRET_BODY",
         )
-        with self.assertLogs("finance_agents.runtime", level="ERROR") as logs:
+        with self.assertLogs("payroll_agents.runtime", level="ERROR") as logs:
             with self.assertRaises(httpx.HTTPStatusError):
                 require_service_success(response, "Foundry model")
         self.assertNotIn("SECRET_BODY", "\n".join(logs.output))
@@ -546,7 +546,7 @@ class RuntimeIdentityTests(unittest.IsolatedAsyncioTestCase):
                     return journal if url == "tasks" else base
 
                 with patch.dict("os.environ", environment), patch(
-                    "finance_agents.runtime.BlobStateStore.from_url", side_effect=store_for,
+                    "payroll_agents.runtime.BlobStateStore.from_url", side_effect=store_for,
                 ):
                     before = registry_store.read()
                     await runtime.turn(SimpleNamespace(activity=activity), None)
@@ -638,7 +638,7 @@ class RuntimeIdentityTests(unittest.IsolatedAsyncioTestCase):
         activity = SimpleNamespace(
             id="native-message", conversation=SimpleNamespace(id="native-chat"),
         )
-        with patch("finance_agents.runtime.asyncio.sleep", new_callable=AsyncMock) as sleep:
+        with patch("payroll_agents.runtime.asyncio.sleep", new_callable=AsyncMock) as sleep:
             result = await runtime._teams_peer_route(
                 {}, {"agent_user_object_id": "recipient"}, "sender", activity, "Natural text",
             )
@@ -786,7 +786,7 @@ class RuntimeIdentityTests(unittest.IsolatedAsyncioTestCase):
                     messenger.send_approval_email.assert_awaited_once()
                 else:
                     messenger.send_approval_email.side_effect = DeliveryRejected("Graph rejected email")
-                    with self.assertLogs("finance_agents.runtime", level="WARNING"):
+                    with self.assertLogs("payroll_agents.runtime", level="WARNING"):
                         results = await runtime._notify_approvers(ledger, messenger, bindings, request)
                     self.assertEqual(sum(result.get("accepted") is False for result in results), 2)
                 emails = [delivery for delivery in ledger.snapshot()["outbox"].values()
@@ -845,12 +845,12 @@ class RuntimeIdentityTests(unittest.IsolatedAsyncioTestCase):
             response=httpx.Response(500),
         )
         client.call.side_effect = [McpToolError("SECRET_ERROR"), service_error, evidence, evidence]
-        with patch("finance_agents.runtime.McpClient", return_value=client), patch(
-            "finance_agents.runtime.refresh_runtime_projection",
+        with patch("payroll_agents.runtime.McpClient", return_value=client), patch(
+            "payroll_agents.runtime.refresh_runtime_projection",
         ) as refresh, patch(
-            "finance_agents.runtime.read_current_projection", return_value=self.analytical_proof(),
-        ), patch("finance_agents.runtime.revalidate_projection"), self.assertLogs(
-            "finance_agents.runtime", level="INFO",
+            "payroll_agents.runtime.read_current_projection", return_value=self.analytical_proof(),
+        ), patch("payroll_agents.runtime.revalidate_projection"), self.assertLogs(
+            "payroll_agents.runtime", level="INFO",
         ) as logs:
             answer = await runtime._orchestrate(
                 "Report only. Do not contact the peer or refresh analytics.", None, None,
@@ -970,17 +970,17 @@ class RuntimeIdentityTests(unittest.IsolatedAsyncioTestCase):
                 client = AsyncMock()
                 client.tools.return_value = [{"name": "GetMessage", "inputSchema": {"type": "object"}}]
                 client.call.return_value = {"content": [{"type": "text", "text": "Unverified USD 999"}]}
-                with patch("finance_agents.runtime.McpClient", return_value=client), patch(
-                    "finance_agents.runtime.read_current_projection",
+                with patch("payroll_agents.runtime.McpClient", return_value=client), patch(
+                    "payroll_agents.runtime.read_current_projection",
                     return_value=self.analytical_proof(),
                     side_effect=None if changed else ValueError("Refreshing"),
                 ), patch(
-                    "finance_agents.runtime.revalidate_projection", side_effect=ValueError("Changed"),
+                    "payroll_agents.runtime.revalidate_projection", side_effect=ValueError("Changed"),
                 ), patch(
-                    "finance_agents.runtime.refresh_runtime_projection",
+                    "payroll_agents.runtime.refresh_runtime_projection",
                     return_value={"completed": True},
                 ) as refresh, self.assertLogs(
-                    "finance_agents.runtime", level="WARNING",
+                    "payroll_agents.runtime", level="WARNING",
                 ), self.assertRaisesRegex(RuntimeError, "bounded orchestration"):
                     await runtime._orchestrate(
                         "Report", None, None,
@@ -1024,8 +1024,8 @@ class RuntimeIdentityTests(unittest.IsolatedAsyncioTestCase):
         self.addAsyncCleanup(runtime.http.aclose)
         client = AsyncMock()
         client.tools.return_value = [{"name": "GetMessage", "inputSchema": {"type": "object"}}]
-        with patch("finance_agents.runtime.McpClient", return_value=client), self.assertLogs(
-            "finance_agents.runtime", level="INFO",
+        with patch("payroll_agents.runtime.McpClient", return_value=client), self.assertLogs(
+            "payroll_agents.runtime", level="INFO",
         ) as logs, self.assertRaisesRegex(RuntimeError, "bounded orchestration"):
             await runtime._orchestrate(
                 "Report", None, None,
@@ -1107,10 +1107,10 @@ class RuntimeIdentityTests(unittest.IsolatedAsyncioTestCase):
         client.tools.return_value = [{
             "name": "GetMessage", "inputSchema": {"type": "object", "properties": {}},
         }]
-        with patch("finance_agents.runtime.McpClient", return_value=client), patch(
-            "finance_agents.runtime.read_current_projection", return_value=self.analytical_proof(state),
-        ), patch("finance_agents.runtime.revalidate_projection"), self.assertLogs(
-            "finance_agents.runtime", level="WARNING",
+        with patch("payroll_agents.runtime.McpClient", return_value=client), patch(
+            "payroll_agents.runtime.read_current_projection", return_value=self.analytical_proof(state),
+        ), patch("payroll_agents.runtime.revalidate_projection"), self.assertLogs(
+            "payroll_agents.runtime", level="WARNING",
         ):
             answer = await runtime._orchestrate(
                 "Report the payroll balance", "context", "authorization",
@@ -1162,9 +1162,9 @@ class RuntimeIdentityTests(unittest.IsolatedAsyncioTestCase):
             return instance
 
         own = {"agent_user_object_id": "bound-user"}
-        with patch("finance_agents.runtime.McpClient", side_effect=client), patch(
-            "finance_agents.runtime.read_current_projection", return_value=self.analytical_proof(),
-        ), patch("finance_agents.runtime.revalidate_projection"):
+        with patch("payroll_agents.runtime.McpClient", side_effect=client), patch(
+            "payroll_agents.runtime.read_current_projection", return_value=self.analytical_proof(),
+        ), patch("payroll_agents.runtime.revalidate_projection"):
             answer = await runtime._orchestrate(
                 "Read only", "context", "authorization",
                 {"fabric": {"mcp_url": "https://api.fabric.microsoft.com/v1/mcp/agent"},

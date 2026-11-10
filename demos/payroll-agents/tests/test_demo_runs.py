@@ -2,8 +2,8 @@ import tempfile
 import unittest
 from pathlib import Path
 
-from finance_agents.demo_runs import DemoRuns
-from finance_agents.ledger import (
+from payroll_agents.demo_runs import DemoRuns
+from payroll_agents.ledger import (
     AgentRole, Decision, DomainError, Ledger, LedgerConfig, Principal, SQLiteStateStore,
 )
 

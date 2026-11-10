@@ -100,5 +100,5 @@ jobs:
         run: docker build -f infra/runtime.Dockerfile -t brk301-payroll:check .
       - name: Check SDK and reader in built image
         run: |
-          docker run --rm --network none --entrypoint python brk301-payroll:check -c "import finance_agents.host"
+          docker run --rm --network none --entrypoint python brk301-payroll:check -c "import payroll_agents.host"
           docker run --rm --network none --workdir /app/parquet-reader --entrypoint node brk301-payroll:check --input-type=module -e "await import('hyparquet')"

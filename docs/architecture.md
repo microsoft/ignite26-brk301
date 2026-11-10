@@ -32,10 +32,12 @@ surfaces, not extra payroll agents.
 
 ## Payroll collaboration
 
-`demos/payroll-agents/src/finance_agents` contains two independently
-hired agents with accounts, governed by Agent 365. Stable internal role keys are
-`hotel_finance` and `banking_operations`; user-facing names are Hotel Payroll
-and Hotel Treasurer.
+`demos/payroll-agents/src/payroll_agents` is one shared runtime package for two
+independently hired agents with accounts, governed by Agent 365: Hotel Payroll
+identifies the shortfall and requests funding; Hotel Treasurer coordinates
+human approval and executes the authorized synthetic transfer. The package is
+not a third payroll agent. Stable internal role keys map `hotel_finance` to
+Hotel Payroll and `banking_operations` to Hotel Treasurer.
 Do not rename role keys or reuse one identity for both agents.
 
 The customer-facing term is **agents with accounts**. Local folders and Python

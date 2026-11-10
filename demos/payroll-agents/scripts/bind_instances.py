@@ -8,8 +8,8 @@ import tempfile
 from pathlib import Path
 from urllib.parse import quote
 
-from finance_agents.ledger import Ledger, LedgerConfig, SQLiteStateStore
-from finance_agents.projection import ProjectionConfig
+from payroll_agents.ledger import Ledger, LedgerConfig, SQLiteStateStore
+from payroll_agents.projection import ProjectionConfig
 from provision_storage import az
 
 

@@ -2,8 +2,8 @@ import tempfile
 import unittest
 from pathlib import Path
 
-from finance_agents.ledger import SQLiteStateStore
-from finance_agents.peer_routes import (
+from payroll_agents.ledger import SQLiteStateStore
+from payroll_agents.peer_routes import (
     HOP_HEADER, REFERENCE_HEADER, PeerRoutes, email_peer_route,
 )
 

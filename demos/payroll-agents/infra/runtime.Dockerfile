@@ -14,4 +14,4 @@ RUN python -m pip install --no-cache-dir ".[host]"
 ENV PYTHONPATH=/app/src
 ENV PORT=8088
 EXPOSE 8088
-ENTRYPOINT ["python", "-m", "finance_agents.host"]
+ENTRYPOINT ["python", "-m", "payroll_agents.host"]

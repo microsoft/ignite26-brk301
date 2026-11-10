@@ -13,7 +13,7 @@ from fabric_rest import FabricRest, cli
 
 ROOT = Path(__file__).resolve().parents[1]
 sys.path.insert(0, str(ROOT / "src"))
-from finance_agents.projection import REFRESH_SCHEMAS
+from payroll_agents.projection import REFRESH_SCHEMAS
 
 ROLE = "FinanceHotelReadOnly"
 

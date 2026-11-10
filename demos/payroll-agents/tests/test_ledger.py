@@ -12,7 +12,7 @@ from dataclasses import replace
 from pathlib import Path
 from unittest.mock import patch
 
-from finance_agents import (
+from payroll_agents import (
     AgentRole,
     Decision,
     DomainError,
@@ -559,7 +559,7 @@ class SQLiteTests(unittest.TestCase):
             connections.append(connection)
             return connection
 
-        with patch("finance_agents.ledger.sqlite3.connect", side_effect=connect):
+        with patch("payroll_agents.ledger.sqlite3.connect", side_effect=connect):
             store = SQLiteStateStore(self.path)
             self.assertEqual(Snapshot(None, None), store.read())
             self.assertTrue(store.compare_and_swap(None, {"value": 1}))

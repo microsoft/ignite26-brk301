@@ -1,4 +1,4 @@
-name: hotel-bank-finance-agents
+name: payroll-agents
 services:
   hotel:
     project: .
