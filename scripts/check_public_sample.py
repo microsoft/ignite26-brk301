@@ -9,7 +9,7 @@ from urllib.parse import unquote
 
 PRIVATE_DIRECTORIES = {
     ".azure", ".state", ".foundry", "node_modules", ".venv", "__pycache__",
-    "browser-profile", "browser-profiles",
+    "browser-profile", "browser-profiles", ".ledger-test-state",
 }
 PRIVATE_FILES = {
     "environment.local.json", "a365.config.json", "a365.generated.config.json",

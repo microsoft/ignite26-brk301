@@ -550,6 +550,7 @@ class SQLiteTests(unittest.TestCase):
             def execute(self, sql, *args, **kwargs):
                 cursor = super().execute(sql, *args, **kwargs)
                 if failing_sql is not None and sql.startswith(failing_sql):
+                    cursor.close()
                     raise sqlite3.OperationalError("Injected failure after SQL execution")
                 return cursor
 
