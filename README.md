@@ -1,13 +1,14 @@
 # Ignite 2026 BRK301: From grounded answers to agents that act
 
-One hotel story, two demonstrations: start with a customer-service agent using
-Microsoft IQ, then bring two agents with accounts into the same Microsoft Teams
-group chat to coordinate payroll funding with human approval through Agent 365.
+One hotel story, three agents, two demonstrations: start with the Hotel Guest
+Services customer-service agent using Microsoft IQ, then bring Hotel Payroll
+and Hotel Treasurer into the same Microsoft Teams group chat. These two agents
+with accounts coordinate payroll funding with human approval through Agent 365.
 
 | Demo | What you see | Source |
 | --- | --- | --- |
-| Customer service | A single agent combines Foundry IQ policy and property knowledge, Fabric IQ operational data, and Work IQ workplace context. | [Customer-service project](demos/customer-service/README.md) |
-| Proactive collaboration | Hotel Payroll identifies a funding shortfall; Hotel Treasurer coordinates approval, executes the authorized synthetic transfer, and reports the result in their shared chat. | [Payroll project](demos/payroll-autopilots/README.md) |
+| Customer-service agent | Hotel Guest Services combines Foundry IQ policy and property knowledge, Fabric IQ operational data, and Work IQ workplace context. | [Customer-service agent](demos/customer-service-agent/README.md) |
+| Payroll agents | Hotel Payroll identifies a funding shortfall; Hotel Treasurer coordinates approval, executes the authorized synthetic transfer, and reports the result in their shared chat. | [Payroll agents](demos/payroll-agents/README.md) |
 
 Start with the [session walkthrough](docs/demo-walkthrough.md), then read the
 [architecture](docs/architecture.md) and [setup guide](docs/setup.md).

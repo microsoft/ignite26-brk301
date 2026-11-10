@@ -11,8 +11,8 @@ from uuid import uuid4
 
 from azure.identity import AzureCliCredential
 
-from finance_autopilots.blob_store import BlobStateStore
-from finance_autopilots.ledger import (
+from finance_agents.blob_store import BlobStateStore
+from finance_agents.ledger import (
     AgentRole,
     Decision,
     Ledger,

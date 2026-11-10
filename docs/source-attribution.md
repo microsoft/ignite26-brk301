@@ -5,8 +5,8 @@ Marco Casalaina:
 
 | Source | Imported commit | Destination |
 | --- | --- | --- |
-| [hotel-agent-a365](https://github.com/mcasalaina/hotel-agent-a365) | `5e0bf01c07fe6af2d9100a8d7e21dda37ec64dc5` | `demos/customer-service` |
-| [hotel-bank-finance-agents-365](https://github.com/mcasalaina/hotel-bank-finance-agents-365) | `9b31ab7050f594220df6f532f3324882ff6f0f19` | `demos/payroll-autopilots` |
+| [hotel-agent-a365](https://github.com/mcasalaina/hotel-agent-a365) | `5e0bf01c07fe6af2d9100a8d7e21dda37ec64dc5` | `demos/customer-service-agent` |
+| [hotel-bank-finance-agents-365](https://github.com/mcasalaina/hotel-bank-finance-agents-365) | `9b31ab7050f594220df6f532f3324882ff6f0f19` | `demos/payroll-agents` |
 
 The source repositories' histories are not imported. The second source may
 require access; customers should use this repository's curated implementation,
@@ -17,8 +17,11 @@ public release.
 
 ## Adaptations
 
-- Kept the two runtime projects isolated, including original relative imports,
-  prompts, deterministic data, tests, and package locks.
+- Kept the two runtime projects isolated, preserving runtime behavior, prompts,
+  deterministic data, tests, and package locks.
+- Renamed local demo folders and the payroll Python package to use agent
+  terminology, updating imports, Docker, CI, documentation, and publication URLs.
+  External API fields and deployed resource names retain their compatible values.
 - Replaced deployed tenant/resource bindings consistently across examples,
   validators, Fabric definitions, and tests with sample values. Internal
   financial role names and first-party protocol/audience identifiers are retained.

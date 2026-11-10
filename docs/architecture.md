@@ -18,9 +18,9 @@ flowchart LR
     Ledger --> Projection["Fabric analytical projection"]
 ```
 
-## Customer service
+## Customer-service agent
 
-`demos/customer-service/src/hotel-servicing-agent` contains the Foundry Hosted
+`demos/customer-service-agent/src/hotel-servicing-agent` contains the Foundry Hosted
 Agent. Its tools separate unstructured policy retrieval, structured Fabric data,
 guarded mutations, and Work IQ. Property identity must be established from actual
 reservation data before property-scoped policy retrieval. Dates and citations
@@ -32,15 +32,15 @@ surfaces, not extra payroll agents.
 
 ## Payroll collaboration
 
-`demos/payroll-autopilots/src/finance_autopilots` contains two independently
+`demos/payroll-agents/src/finance_agents` contains two independently
 hired agents with accounts, governed by Agent 365. Stable internal role keys are
 `hotel_finance` and `banking_operations`; user-facing names are Hotel Payroll
 and Hotel Treasurer.
 Do not rename role keys or reuse one identity for both agents.
 
-The customer-facing term is **agents with accounts**. Existing source paths,
-package names, resource names, and API fields that contain `autopilot` are
-compatibility identifiers, not the current product terminology.
+The customer-facing term is **agents with accounts**. Local folders and Python
+packages use `agents`. External API fields and deployed resource identifiers
+retain their required names for compatibility; they are not display names.
 
 The transactional ledger is authoritative. Amounts are integer cents; approval,
 balance updates, transaction identity, and notification state are durably guarded
@@ -55,7 +55,8 @@ presented as interchangeable evidence guarantees.
 
 ## Deployment boundaries
 
-Each project keeps its original relative directory layout so Docker contexts,
-tests, and scripts continue to resolve their own assets. No root `azd up` command
-deploys the combined repository. Local validation does not alter a live tenant.
-The source import is not evidence that a replacement-tenant deployment works.
+Each agent project has its own directory, Docker context, and tests. Local
+package imports, scripts, CI, and documentation follow the renamed agent paths.
+No root `azd up` command deploys the combined repository. Local validation does
+not alter a live tenant. The source import is not evidence that a
+replacement-tenant deployment works.

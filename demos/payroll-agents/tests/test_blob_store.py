@@ -8,7 +8,7 @@ from unittest.mock import Mock, patch
 from azure.core import MatchConditions
 from azure.core.exceptions import HttpResponseError
 
-from finance_autopilots.blob_store import BlobStateStore, InvalidStoredState
+from finance_agents.blob_store import BlobStateStore, InvalidStoredState
 
 
 def service_error(status: int, code: str) -> HttpResponseError:
@@ -122,7 +122,7 @@ class BlobStateStoreTests(unittest.TestCase):
     def test_factory_rejects_keys_sas_and_non_azure_endpoints(self) -> None:
         credential = Mock(get_token=Mock())
         url = "https://finance.blob.core.windows.net/ledger/state.json"
-        with patch("finance_autopilots.blob_store.BlobClient") as sdk:
+        with patch("finance_agents.blob_store.BlobClient") as sdk:
             store = BlobStateStore.from_url(url, credential)
             self.assertIsInstance(store, BlobStateStore)
             sdk.from_blob_url.assert_called_once_with(url, credential=credential)

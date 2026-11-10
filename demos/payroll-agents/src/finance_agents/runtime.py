@@ -1420,7 +1420,7 @@ class FinanceRuntime:
         )
         instructions = (
             f"You are {self.display_name}, an independent agent with an account in Microsoft 365. "
-            "Use 'agents with accounts' for this agent type, not 'autopilots'. "
+            "Use 'agents with accounts' for this agent type. "
             "The two agents are named Hotel Payroll and Hotel Treasurer. "
             "Hotel Finance and Banking Operations are obsolete names that may appear in "
             "retrieved history. Never use those obsolete names in outgoing messages. "

@@ -10,7 +10,7 @@ surface of an identity, not the definition of the agent.
 
 ## Act 1: Customer service, one IQ at a time
 
-Use the [customer-service project](../demos/customer-service/README.md).
+Use the [customer-service project](../demos/customer-service-agent/README.md).
 The implemented display name is **Hotel Guest Services** and the stable technical
 name is `hotel-servicing-agent`.
 
@@ -33,7 +33,7 @@ not just answer a question."**
 
 ## Act 2: Two agents in the same chat
 
-Use the [payroll project](../demos/payroll-autopilots/README.md). Add the two
+Use the [payroll project](../demos/payroll-agents/README.md). Add the two
 independently hired agents and the configured human approvers to a dedicated
 **Payroll Funding** Microsoft Teams group chat. Bind its actual native chat ID
 in private environment configuration; a chat title alone is not a binding.

@@ -11,7 +11,7 @@ from bind_instances import (
     preserve_projection_seed, projection_only_upgrade, publish_projection_upgrade,
     validated_ledger, verify_hire,
 )
-from finance_autopilots.ledger import DomainError, LedgerConfig
+from finance_agents.ledger import DomainError, LedgerConfig
 
 
 class BindingTests(unittest.TestCase):

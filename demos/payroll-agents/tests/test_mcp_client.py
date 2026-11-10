@@ -3,7 +3,7 @@ import unittest
 
 import httpx
 
-from finance_autopilots.mcp_client import McpClient, McpProtocolError, McpToolError
+from finance_agents.mcp_client import McpClient, McpProtocolError, McpToolError
 
 
 class McpTests(unittest.IsolatedAsyncioTestCase):
@@ -113,7 +113,7 @@ class McpTests(unittest.IsolatedAsyncioTestCase):
 
         async with httpx.AsyncClient(transport=httpx.MockTransport(respond)) as http:
             client = McpClient("https://controlled.example/mcp", self.token, http=http)
-            with self.assertLogs("finance_autopilots.mcp_client", level="ERROR") as logs:
+            with self.assertLogs("finance_agents.mcp_client", level="ERROR") as logs:
                 with self.assertRaises(httpx.HTTPStatusError):
                     await client._rpc("tools/call", {"name": "query", "arguments": {}})
         self.assertEqual(len(requests), 1)
@@ -141,7 +141,7 @@ class McpTests(unittest.IsolatedAsyncioTestCase):
                     lambda request: response
                 )) as http:
                     client = McpClient("https://controlled.example/mcp", self.token, http=http)
-                    with self.assertLogs("finance_autopilots.mcp_client", level="ERROR") as logs:
+                    with self.assertLogs("finance_agents.mcp_client", level="ERROR") as logs:
                         with self.assertRaises(httpx.HTTPStatusError):
                             await client._rpc("tools/call", {"name": "query", "arguments": {}})
                 self.assertNotIn("SECRET_RESPONSE_BODY", "\n".join(logs.output))
@@ -158,7 +158,7 @@ class McpTests(unittest.IsolatedAsyncioTestCase):
         )) as http:
             client = McpClient("https://controlled.example/mcp", self.token, http=http)
             client._initialized = True
-            with self.assertLogs("finance_autopilots.mcp_client", level="ERROR") as logs:
+            with self.assertLogs("finance_agents.mcp_client", level="ERROR") as logs:
                 with self.assertRaises(McpToolError):
                     await client.call("GetMessage", {})
         output = "\n".join(logs.output)

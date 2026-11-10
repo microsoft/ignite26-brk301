@@ -56,8 +56,8 @@ def main():
             ),
             "developerName": "Microsoft Corporation",
             "developerWebsiteUrl": "https://github.com/microsoft/ignite26-brk301",
-            "privacyUrl": "https://github.com/microsoft/ignite26-brk301/blob/main/demos/payroll-autopilots/docs/privacy.md",
-            "termsOfUseUrl": "https://github.com/microsoft/ignite26-brk301/blob/main/demos/payroll-autopilots/docs/terms.md",
+            "privacyUrl": "https://github.com/microsoft/ignite26-brk301/blob/main/demos/payroll-agents/docs/privacy.md",
+            "termsOfUseUrl": "https://github.com/microsoft/ignite26-brk301/blob/main/demos/payroll-agents/docs/terms.md",
             "useAgenticUserTemplate": True,
             "agenticUserTemplate": {
                 "Id": "digitalWorkerTemplate", "File": "agenticUserTemplateManifest.json",

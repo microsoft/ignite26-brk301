@@ -1,4 +1,4 @@
-name: hotel-bank-finance-autopilots
+name: hotel-bank-finance-agents
 services:
   hotel:
     project: .

@@ -4,8 +4,8 @@
 
 Use Python 3.13 and Node.js 22 or later. Each demo needs its own virtual
 environment because the voice proxy and payroll host pin different SDK versions.
-Follow [customer-service setup](../demos/customer-service/README.md) and
-[payroll setup](../demos/payroll-autopilots/README.md).
+Follow [customer-service agent setup](../demos/customer-service-agent/README.md)
+and [payroll agents setup](../demos/payroll-agents/README.md).
 
 From the repository root, run the dependency-free publication checks:
 
@@ -24,8 +24,8 @@ configuration from the relevant templates:
 
 | Project | Templates |
 | --- | --- |
-| Customer service | `.env.template`, `config/azd.env.example`, `scripts/fabric/config.example.json`, `agent/a365.config.example.json`, `web/*/.env.example` |
-| Payroll | `config/environment.example.json` |
+| Customer-service agent | `.env.template`, `config/azd.env.example`, `scripts/fabric/config.example.json`, `agent/a365.config.example.json`, `web/*/.env.example` |
+| Payroll agents | `config/environment.example.json` |
 
 All paths in the table are relative to the project directory. Example hostnames
 beginning with `replace` and UUIDs beginning `00000000-0000-4000-8000-` are

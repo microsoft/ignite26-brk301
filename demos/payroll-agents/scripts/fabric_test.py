@@ -10,7 +10,7 @@ import unittest
 from unittest.mock import patch
 
 sys.path.insert(0, str(Path(__file__).resolve().parents[1] / "src"))
-from finance_autopilots.ledger import Ledger, LedgerConfig, Snapshot, Decision, Principal, AgentRole
+from finance_agents.ledger import Ledger, LedgerConfig, Snapshot, Decision, Principal, AgentRole
 from fabric_rest import FabricRest, parse_response, redact
 from provision_fabric import (
     Provisioner, baseline_tables, dataagent_definition, decoded,
@@ -22,7 +22,7 @@ from fabric_refresh import (
     REFRESH_SCHEMAS,
 )
 from fabric_graph import graph_agent_definition
-from finance_autopilots import projection
+from finance_agents import projection
 
 
 CONFIG = {"tenantId": "test-tenant", "subscriptionId": "test-subscription",

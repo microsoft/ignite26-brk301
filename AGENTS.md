@@ -16,5 +16,6 @@ Do not claim a live deployment was verified from offline tests.
 Read the microsoft-foundry skill before changing Microsoft Foundry agent code.
 Keep both customer-service instruction copies synchronized.
 
-Use "agents with accounts" in customer-facing language. Preserve legacy API
-fields, resource names, package names, and source paths for compatibility.
+Use "agents with accounts" in customer-facing language and "agents" in local
+folder/package names. Customer service is also an agent. Preserve external API
+fields and deployed resource names for compatibility.

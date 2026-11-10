@@ -47,9 +47,10 @@ Keep `hotel_finance` and `banking_operations` as the internal role keys.
 The public names are Hotel Payroll and Hotel Treasurer. Bind each to a distinct,
 manager-verified hire; do not reuse an operator identity.
 
-**Agents with accounts** is the customer-facing term. Legacy source paths,
-package/resource names, and publication API fields remain unchanged for
-compatibility; they are not display names.
+**Agents with accounts** is the customer-facing term. Local source paths and the
+`finance_agents` package use agent terminology. External resource names and
+publication API fields remain unchanged for compatibility; they are not display
+names.
 
 Default `three_iq` mode requires successful Foundry IQ, Fabric IQ, and Work IQ
 evidence plus physical projection validation before governed model-driven

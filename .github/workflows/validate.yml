@@ -20,11 +20,11 @@ jobs:
       - run: python scripts/check_public_sample.py
       - run: python -m unittest discover -s tests -v
 
-  customer-service:
+  customer-service-agent:
     runs-on: ubuntu-latest
     defaults:
       run:
-        working-directory: demos/customer-service
+        working-directory: demos/customer-service-agent
     steps:
       - uses: actions/checkout@v4
       - uses: actions/setup-python@v5
@@ -49,14 +49,14 @@ jobs:
     runs-on: ubuntu-latest
     defaults:
       run:
-        working-directory: demos/customer-service
+        working-directory: demos/customer-service-agent
     steps:
       - uses: actions/checkout@v4
       - uses: actions/setup-node@v4
         with:
           node-version: "22"
           cache: npm
-          cache-dependency-path: demos/customer-service/web/frontend/package-lock.json
+          cache-dependency-path: demos/customer-service-agent/web/frontend/package-lock.json
       - run: npm --prefix web/frontend ci
       - run: npm --prefix web/frontend test
       - run: npm --prefix web/frontend run lint
@@ -67,7 +67,7 @@ jobs:
     runs-on: ubuntu-latest
     defaults:
       run:
-        working-directory: demos/customer-service
+        working-directory: demos/customer-service-agent
     steps:
       - uses: actions/checkout@v4
       - uses: actions/setup-python@v5
@@ -77,11 +77,11 @@ jobs:
       - run: python -m compileall -q agent
       - run: python -m pytest tests/unit/test_bridge_readiness.py tests/unit/test_private_vault_bootstrap.py
 
-  payroll-autopilots:
+  payroll-agents:
     runs-on: ubuntu-latest
     defaults:
       run:
-        working-directory: demos/payroll-autopilots
+        working-directory: demos/payroll-agents
     env:
       PYTHONPATH: src:scripts
     steps:
@@ -100,5 +100,5 @@ jobs:
         run: docker build -f infra/runtime.Dockerfile -t brk301-payroll:check .
       - name: Check SDK and reader in built image
         run: |
-          docker run --rm --network none --entrypoint python brk301-payroll:check -c "import finance_autopilots.host"
+          docker run --rm --network none --entrypoint python brk301-payroll:check -c "import finance_agents.host"
           docker run --rm --network none --workdir /app/parquet-reader --entrypoint node brk301-payroll:check --input-type=module -e "await import('hyparquet')"

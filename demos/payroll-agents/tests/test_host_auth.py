@@ -7,7 +7,7 @@ from unittest.mock import patch
 sys.path.insert(0, str(Path(__file__).resolve().parents[1] / "scripts"))
 
 from deploy_agents import validate_tenant_endpoint
-from finance_autopilots.host import gateway_identity
+from finance_agents.host import gateway_identity
 
 
 class GatewayAuthenticationTests(unittest.TestCase):
