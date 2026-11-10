@@ -19,7 +19,7 @@ from provision_fabric import (
     stable_id, validate_sources,
 )
 sys.path.insert(0, str(ROOT / "src"))
-from payroll_agents.projection import (
+from hotel_payroll_treasurer_agents.projection import (
     text, integer, validate_snapshot, project_snapshot, ProjectionConfig, HttpResponse,
     ProjectionRefreshError, refresh_projection, REFRESH_SCHEMAS,
 )

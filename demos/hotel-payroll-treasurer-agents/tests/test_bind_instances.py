@@ -11,7 +11,7 @@ from bind_instances import (
     preserve_projection_seed, projection_only_upgrade, publish_projection_upgrade,
     validated_ledger, verify_hire,
 )
-from payroll_agents.ledger import DomainError, LedgerConfig
+from hotel_payroll_treasurer_agents.ledger import DomainError, LedgerConfig
 
 
 class BindingTests(unittest.TestCase):

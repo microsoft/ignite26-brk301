@@ -32,8 +32,9 @@ surfaces, not extra payroll agents.
 
 ## Payroll collaboration
 
-`demos/payroll-agents/src/payroll_agents` is one shared runtime package for two
-independently hired agents with accounts, governed by Agent 365: Hotel Payroll
+`demos/hotel-payroll-treasurer-agents/src/hotel_payroll_treasurer_agents` is one
+shared runtime package for two independently hired agents with accounts,
+governed by Agent 365: Hotel Payroll
 identifies the shortfall and requests funding; Hotel Treasurer coordinates
 human approval and executes the authorized synthetic transfer. The package is
 not a third payroll agent. Stable internal role keys map `hotel_finance` to

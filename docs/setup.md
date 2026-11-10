@@ -5,7 +5,7 @@
 Use Python 3.13 and Node.js 22 or later. Each demo needs its own virtual
 environment because the voice proxy and payroll host pin different SDK versions.
 Follow [customer-service agent setup](../demos/customer-service-agent/README.md)
-and [payroll agents setup](../demos/payroll-agents/README.md).
+and [payroll agents setup](../demos/hotel-payroll-treasurer-agents/README.md).
 
 From the repository root, run the dependency-free publication checks:
 

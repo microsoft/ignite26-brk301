@@ -11,8 +11,8 @@ from uuid import uuid4
 
 from azure.identity import AzureCliCredential
 
-from payroll_agents.blob_store import BlobStateStore
-from payroll_agents.ledger import (
+from hotel_payroll_treasurer_agents.blob_store import BlobStateStore
+from hotel_payroll_treasurer_agents.ledger import (
     AgentRole,
     Decision,
     Ledger,

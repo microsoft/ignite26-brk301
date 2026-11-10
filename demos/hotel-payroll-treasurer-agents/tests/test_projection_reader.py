@@ -13,9 +13,9 @@ from urllib.parse import parse_qs
 
 import httpx
 
-from payroll_agents.ledger import AgentRole, Ledger, LedgerConfig, Snapshot, SQLiteStateStore
-from payroll_agents.projection import REFRESH_SCHEMAS, project_snapshot
-from payroll_agents.projection_reader import (
+from hotel_payroll_treasurer_agents.ledger import AgentRole, Ledger, LedgerConfig, Snapshot, SQLiteStateStore
+from hotel_payroll_treasurer_agents.projection import REFRESH_SCHEMAS, project_snapshot
+from hotel_payroll_treasurer_agents.projection_reader import (
     DeltaReader, decode_parquet, read_current_projection, relative_path, revalidate_projection,
 )
 
@@ -180,7 +180,7 @@ class DeltaTests(unittest.TestCase):
                 "projection_status", f"_delta_log/{10:020d}.checkpoint.{part:010d}.{2:010d}.parquet",
             )] = b"checkpoint" + bytes([part])
         self.install(versions={11: []})
-        with patch("payroll_agents.projection_reader.decode_parquet", side_effect=[
+        with patch("hotel_payroll_treasurer_agents.projection_reader.decode_parquet", side_effect=[
             actions[:2], actions[2:], [{"balance_cents": 3500000}],
         ]):
             self.assertEqual(self.reader.table("projection_status")["version"], 11)
@@ -251,7 +251,7 @@ class ProjectionProofTests(unittest.TestCase):
         self.reader.table.side_effect = lambda name: copy.deepcopy(self.tables[name])
         self.reader.inventory.side_effect = lambda name: (self.tables[name]["version"], set(), None)
         for target, value in (("ProjectionConfig.from_output", self.config), ("DeltaReader", self.reader)):
-            mocked = patch("payroll_agents.projection_reader." + target, return_value=value)
+            mocked = patch("hotel_payroll_treasurer_agents.projection_reader." + target, return_value=value)
             mocked.start()
             self.addCleanup(mocked.stop)
 

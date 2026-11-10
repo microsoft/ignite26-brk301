@@ -33,7 +33,7 @@ not just answer a question."**
 
 ## Act 2: Two agents in the same chat
 
-Use the [payroll project](../demos/payroll-agents/README.md). Add the two
+Use the [payroll project](../demos/hotel-payroll-treasurer-agents/README.md). Add the two
 independently hired agents and the configured human approvers to a dedicated
 **Payroll Funding** Microsoft Teams group chat. Bind its actual native chat ID
 in private environment configuration; a chat title alone is not a binding.

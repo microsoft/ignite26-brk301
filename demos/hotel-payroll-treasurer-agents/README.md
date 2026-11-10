@@ -6,8 +6,9 @@ shortfall; Hotel Treasurer coordinates human approval and executes the
 authorized synthetic transfer. See the [walkthrough](../../docs/demo-walkthrough.md).
 
 This folder is one shared payroll-funding demo with two agents, not an additional
-agent. The `payroll_agents` Python package hosts both roles under separate agent
-identities; the underscore is the Python spelling of the `payroll-agents` name.
+agent. The `hotel_payroll_treasurer_agents` Python package hosts both roles under
+separate agent identities. Hyphens in the `hotel-payroll-treasurer-agents` demo
+name become underscores in Python imports.
 
 | Agent | Responsibility | Internal role key |
 | --- | --- | --- |
@@ -57,9 +58,9 @@ The public names are Hotel Payroll and Hotel Treasurer. Bind each to a distinct,
 manager-verified hire; do not reuse an operator identity.
 
 **Agents with accounts** is the customer-facing term. Local source paths and the
-`payroll_agents` package use agent terminology. External resource names and
-publication API fields remain unchanged for compatibility; they are not display
-names.
+`hotel_payroll_treasurer_agents` package use agent terminology. External resource
+names and publication API fields remain unchanged for compatibility; they are not
+display names.
 
 Default `three_iq` mode requires successful Foundry IQ, Fabric IQ, and Work IQ
 evidence plus physical projection validation before governed model-driven

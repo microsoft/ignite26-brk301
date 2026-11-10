@@ -1,4 +1,4 @@
-name: payroll-agents
+name: hotel-payroll-treasurer-agents
 services:
   hotel:
     project: .

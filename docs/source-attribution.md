@@ -6,7 +6,7 @@ Marco Casalaina:
 | Source | Imported commit | Destination |
 | --- | --- | --- |
 | [hotel-agent-a365](https://github.com/mcasalaina/hotel-agent-a365) | `5e0bf01c07fe6af2d9100a8d7e21dda37ec64dc5` | `demos/customer-service-agent` |
-| [hotel-bank-finance-agents-365](https://github.com/mcasalaina/hotel-bank-finance-agents-365) | `9b31ab7050f594220df6f532f3324882ff6f0f19` | `demos/payroll-agents` |
+| [hotel-bank-finance-agents-365](https://github.com/mcasalaina/hotel-bank-finance-agents-365) | `9b31ab7050f594220df6f532f3324882ff6f0f19` | `demos/hotel-payroll-treasurer-agents` |
 
 The source repositories' histories are not imported. The second source may
 require access; customers should use this repository's curated implementation,

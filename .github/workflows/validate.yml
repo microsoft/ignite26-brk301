@@ -77,11 +77,11 @@ jobs:
       - run: python -m compileall -q agent
       - run: python -m pytest tests/unit/test_bridge_readiness.py tests/unit/test_private_vault_bootstrap.py
 
-  payroll-agents:
+  hotel-payroll-treasurer-agents:
     runs-on: ubuntu-latest
     defaults:
       run:
-        working-directory: demos/payroll-agents
+        working-directory: demos/hotel-payroll-treasurer-agents
     env:
       PYTHONPATH: src:scripts
     steps:
@@ -100,5 +100,5 @@ jobs:
         run: docker build -f infra/runtime.Dockerfile -t brk301-payroll:check .
       - name: Check SDK and reader in built image
         run: |
-          docker run --rm --network none --entrypoint python brk301-payroll:check -c "import payroll_agents.host"
+          docker run --rm --network none --entrypoint python brk301-payroll:check -c "import hotel_payroll_treasurer_agents.host"
           docker run --rm --network none --workdir /app/parquet-reader --entrypoint node brk301-payroll:check --input-type=module -e "await import('hyparquet')"

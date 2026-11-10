@@ -145,7 +145,7 @@ class McpClient:
         result = await self._rpc("initialize", {
             "protocolVersion": self._protocol,
             "capabilities": {},
-            "clientInfo": {"name": "payroll-agents", "version": "0.1.0"},
+            "clientInfo": {"name": "hotel-payroll-treasurer-agents", "version": "0.1.0"},
         })
         protocol = result.get("protocolVersion")
         if protocol not in ("2024-11-05", "2025-03-26", "2025-06-18"):

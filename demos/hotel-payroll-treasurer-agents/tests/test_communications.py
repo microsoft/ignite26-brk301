@@ -4,8 +4,8 @@ from unittest.mock import Mock
 
 import httpx
 
-from payroll_agents.communications import DeliveryRejected, DeliveryUncertain, OwnUserMessenger
-from payroll_agents.peer_routes import email_peer_route
+from hotel_payroll_treasurer_agents.communications import DeliveryRejected, DeliveryUncertain, OwnUserMessenger
+from hotel_payroll_treasurer_agents.peer_routes import email_peer_route
 
 OWN = "00000000-0000-0000-0000-000000000001"
 RECIPIENT = {"object_id": "00000000-0000-0000-0000-000000000002",
