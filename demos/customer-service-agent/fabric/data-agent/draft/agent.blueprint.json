@@ -1,0 +1,18 @@
+{
+  "displayName": "HotelOperationsAgent",
+  "description": "Deployable draft Data Agent definition with explicit authority boundaries across both lakehouses, semantic model, and ontology.",
+  "itemType": "DataAgent",
+  "definitionFormat": "JSON",
+  "definitionRoot": "fabric/data-agent/draft",
+  "includePaths": [
+    "Files/Config/**"
+  ],
+  "deployable": true,
+  "dependencies": [
+    "lakehouse:HotelOperations",
+    "lakehouse:HotelGuestServices",
+    "semanticModel:HotelOperationsModel",
+    "ontology:HotelOperationsOntology"
+  ],
+  "publishStrategy": "runtime-notebook-only"
+}

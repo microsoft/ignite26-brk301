@@ -1,0 +1,36 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <script>
+      (() => {
+        const query = new URLSearchParams(window.location.search);
+        const hash = new URLSearchParams(window.location.hash.slice(1));
+        const isLegacyAuthResponse =
+          window.opener &&
+          (query.has("code") || query.has("error") || hash.has("code") || hash.has("error"));
+        if (isLegacyAuthResponse) {
+          window.location.replace(
+            `/redirect.html${window.location.search}${window.location.hash}`,
+          );
+        }
+
+        const param = new URLSearchParams(window.location.search).get("scoutTheme");
+        const theme =
+          param || (window.matchMedia("(prefers-color-scheme: dark)").matches ? "dark" : "light");
+        document.documentElement.setAttribute("data-theme", theme);
+      })();
+    </script>
+    <link rel="icon" type="image/svg+xml" href="/src/assets/brand-mark.svg" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <meta
+      name="description"
+      content="Hotel simulated contact center (synthetic demo data only)."
+    />
+    <title>Hotel | Simulated Contact Center</title>
+  </head>
+  <body>
+    <div id="root"></div>
+    <script type="module" src="/src/main.tsx"></script>
+  </body>
+</html>

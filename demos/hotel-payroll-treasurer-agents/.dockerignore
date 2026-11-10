@@ -1,0 +1,9 @@
+.git
+.venv
+.state
+.azure
+config/environment.local.json
+**/__pycache__
+**/node_modules
+tests
+docs

@@ -1,0 +1,20 @@
+{
+  "displayName": "HotelOperationsModel",
+  "description": "Deployable Direct Lake semantic model over HotelGuestServices aggregate tables plus limited HotelOperations shortcuts.",
+  "itemType": "SemanticModel",
+  "definitionFormat": "TMDL",
+  "definitionRoot": "fabric/semantic-model",
+  "includePaths": [
+    "definition.pbism",
+    "definition/**"
+  ],
+  "deployable": true,
+  "dependencies": [
+    "lakehouse:HotelGuestServices",
+    "lakehouse:HotelOperations"
+  ],
+  "limitations": [
+    "Food and beverage revenue is not present in the committed CSV contract; the model returns BLANK() for Food and Beverage Revenue and TRevPAR.",
+    "GOPPAR, NRevPAR, CPOR, Booking Pace, and Pickup beyond the committed columns remain out of scope for Phase 1 and are not emitted as report measures."
+  ]
+}

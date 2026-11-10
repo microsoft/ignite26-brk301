@@ -1,0 +1,37 @@
+/// Official property dining and hospitality outlets, including their name and outlet type.
+entity usertypes#Outlet
+	lineageTag: 00000000-0000-4000-8000-000000000101
+	backingTable: outlets
+	keyProperty: OutletId
+
+	/// OutletId from HotelOperations.dbo.outlets.outlet_id.
+	property OutletId
+		dataType: string
+		lineageTag: 00000000-0000-4000-8000-000000000087
+
+		backingConfiguration
+			valueColumn: outlets.outlet_id
+
+	/// PropertyId from HotelOperations.dbo.outlets.property_id.
+	property PropertyId
+		dataType: string
+		lineageTag: 00000000-0000-4000-8000-000000000022
+
+		backingConfiguration
+			valueColumn: outlets.property_id
+
+	/// OutletName from HotelOperations.dbo.outlets.name.
+	property OutletName
+		dataType: string
+		lineageTag: 00000000-0000-4000-8000-000000000168
+
+		backingConfiguration
+			valueColumn: outlets.name
+
+	/// OutletType from HotelOperations.dbo.outlets.outlet_type.
+	property OutletType
+		dataType: string
+		lineageTag: 00000000-0000-4000-8000-000000000184
+
+		backingConfiguration
+			valueColumn: outlets.outlet_type

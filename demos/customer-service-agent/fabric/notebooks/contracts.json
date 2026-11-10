@@ -1,0 +1,484 @@
+{
+  "HotelInitialLoad": {
+    "parameters": [
+      {
+        "name": "correlation_id",
+        "description": "Correlation identifier for the load operation.",
+        "required": true,
+        "type": "Guid"
+      },
+      {
+        "name": "source_root",
+        "description": "Repository-relative, absolute, or OneLake path containing authoritative source inputs and manifest.json.",
+        "required": true,
+        "type": "Text"
+      },
+      {
+        "name": "load_mode",
+        "description": "Load mode for the lakehouse bootstrap.",
+        "required": true,
+        "type": "Text",
+        "allowedValues": [
+          "full",
+          "incremental"
+        ]
+      },
+      {
+        "name": "reset_before_load",
+        "description": "Delete authoritative Delta tables before reloading source data.",
+        "required": true,
+        "type": "Boolean"
+      },
+      {
+        "name": "workspace_id",
+        "description": "Workspace identifier that owns both lakehouses.",
+        "required": true,
+        "type": "Guid"
+      },
+      {
+        "name": "workspace_name",
+        "description": "Workspace display name used in diagnostics.",
+        "required": true,
+        "type": "Text"
+      },
+      {
+        "name": "hotel_operations_lakehouse_id",
+        "description": "HotelOperations lakehouse identifier.",
+        "required": true,
+        "type": "Guid"
+      },
+      {
+        "name": "hotel_guest_services_lakehouse_id",
+        "description": "HotelGuestServices lakehouse identifier.",
+        "required": true,
+        "type": "Guid"
+      }
+    ]
+  },
+  "HotelAuthoritativeReset": {
+    "parameters": [
+      {
+        "name": "correlation_id",
+        "description": "Correlation identifier for the reset.",
+        "required": true,
+        "type": "Guid"
+      },
+      {
+        "name": "source_root",
+        "description": "Repository-relative, absolute, or OneLake path containing authoritative source inputs and manifest.json.",
+        "required": true,
+        "type": "Text"
+      },
+      {
+        "name": "reset_scope",
+        "description": "Reset scope for authoritative lakehouses.",
+        "required": true,
+        "type": "Text",
+        "allowedValues": [
+          "guest_services",
+          "operations",
+          "all"
+        ]
+      },
+      {
+        "name": "reload_after_reset",
+        "description": "Whether to rerun the initial load after deleting lakehouse tables.",
+        "required": true,
+        "type": "Boolean"
+      },
+      {
+        "name": "workspace_id",
+        "description": "Workspace identifier that owns both lakehouses.",
+        "required": true,
+        "type": "Guid"
+      },
+      {
+        "name": "workspace_name",
+        "description": "Workspace display name used in diagnostics.",
+        "required": true,
+        "type": "Text"
+      },
+      {
+        "name": "hotel_operations_lakehouse_id",
+        "description": "HotelOperations lakehouse identifier.",
+        "required": true,
+        "type": "Guid"
+      },
+      {
+        "name": "hotel_guest_services_lakehouse_id",
+        "description": "HotelGuestServices lakehouse identifier.",
+        "required": true,
+        "type": "Guid"
+      }
+    ]
+  },
+  "HotelValidation": {
+    "parameters": [
+      {
+        "name": "correlation_id",
+        "description": "Correlation identifier for the validation run.",
+        "required": true,
+        "type": "Guid"
+      },
+      {
+        "name": "source_root",
+        "description": "Repository-relative, absolute, or OneLake path containing authoritative source inputs and manifest.json.",
+        "required": true,
+        "type": "Text"
+      },
+      {
+        "name": "validation_scope",
+        "description": "Validation scope.",
+        "required": true,
+        "type": "Text",
+        "allowedValues": [
+          "source_inputs",
+          "lakehouse_tables",
+          "shortcuts",
+          "all"
+        ]
+      },
+      {
+        "name": "fail_on_warning",
+        "description": "Fail the run when warnings are discovered.",
+        "required": true,
+        "type": "Boolean"
+      },
+      {
+        "name": "workspace_id",
+        "description": "Workspace identifier that owns both lakehouses.",
+        "required": true,
+        "type": "Guid"
+      },
+      {
+        "name": "workspace_name",
+        "description": "Workspace display name used in diagnostics.",
+        "required": true,
+        "type": "Text"
+      },
+      {
+        "name": "hotel_operations_lakehouse_id",
+        "description": "HotelOperations lakehouse identifier.",
+        "required": true,
+        "type": "Guid"
+      },
+      {
+        "name": "hotel_guest_services_lakehouse_id",
+        "description": "HotelGuestServices lakehouse identifier.",
+        "required": true,
+        "type": "Guid"
+      }
+    ]
+  },
+  "HotelReservationAction": {
+    "parameters": [
+      {
+        "name": "action",
+        "description": "Requested reservation mutation.",
+        "required": true,
+        "type": "Text",
+        "allowedValues": [
+          "create",
+          "change",
+          "cancel"
+        ]
+      },
+      {
+        "name": "confirmation_id",
+        "description": "Explicit confirmation identifier supplied by the caller.",
+        "required": true,
+        "type": "Guid"
+      },
+      {
+        "name": "idempotency_key",
+        "description": "Idempotency key for replay-safe execution.",
+        "required": true,
+        "type": "Guid"
+      },
+      {
+        "name": "expected_record_version",
+        "description": "Optimistic concurrency record version expected by the caller.",
+        "required": false,
+        "type": "Integer"
+      },
+      {
+        "name": "request_timestamp_utc",
+        "description": "UTC timestamp of the write request.",
+        "required": true,
+        "type": "DateTime"
+      },
+      {
+        "name": "request_payload_json",
+        "description": "Reservation mutation payload serialized as JSON.",
+        "required": true,
+        "type": "Text"
+      },
+      {
+        "name": "workspace_id",
+        "description": "Workspace identifier that owns both lakehouses.",
+        "required": true,
+        "type": "Guid"
+      },
+      {
+        "name": "hotel_guest_services_lakehouse_id",
+        "description": "HotelGuestServices lakehouse identifier.",
+        "required": true,
+        "type": "Guid"
+      }
+    ]
+  },
+  "HotelRestaurantAction": {
+    "parameters": [
+      {
+        "name": "action",
+        "description": "Requested restaurant reservation mutation.",
+        "required": true,
+        "type": "Text",
+        "allowedValues": [
+          "create",
+          "change",
+          "cancel"
+        ]
+      },
+      {
+        "name": "confirmation_id",
+        "description": "Explicit confirmation identifier supplied by the caller.",
+        "required": true,
+        "type": "Guid"
+      },
+      {
+        "name": "idempotency_key",
+        "description": "Idempotency key for replay-safe execution.",
+        "required": true,
+        "type": "Guid"
+      },
+      {
+        "name": "expected_record_version",
+        "description": "Optimistic concurrency record version expected by the caller.",
+        "required": false,
+        "type": "Integer"
+      },
+      {
+        "name": "request_timestamp_utc",
+        "description": "UTC timestamp of the write request.",
+        "required": true,
+        "type": "DateTime"
+      },
+      {
+        "name": "request_payload_json",
+        "description": "Restaurant mutation payload serialized as JSON.",
+        "required": true,
+        "type": "Text"
+      },
+      {
+        "name": "workspace_id",
+        "description": "Workspace identifier that owns both lakehouses.",
+        "required": true,
+        "type": "Guid"
+      },
+      {
+        "name": "hotel_guest_services_lakehouse_id",
+        "description": "HotelGuestServices lakehouse identifier.",
+        "required": true,
+        "type": "Guid"
+      }
+    ]
+  },
+  "HotelBillingDisputeAction": {
+    "parameters": [
+      {
+        "name": "action",
+        "description": "Requested dispute action.",
+        "required": true,
+        "type": "Text",
+        "allowedValues": [
+          "open",
+          "update",
+          "resolve"
+        ]
+      },
+      {
+        "name": "confirmation_id",
+        "description": "Explicit confirmation identifier supplied by the caller.",
+        "required": true,
+        "type": "Guid"
+      },
+      {
+        "name": "idempotency_key",
+        "description": "Idempotency key for replay-safe execution.",
+        "required": true,
+        "type": "Guid"
+      },
+      {
+        "name": "expected_record_version",
+        "description": "Optimistic concurrency record version expected by the caller.",
+        "required": true,
+        "type": "Integer"
+      },
+      {
+        "name": "request_timestamp_utc",
+        "description": "UTC timestamp of the write request.",
+        "required": true,
+        "type": "DateTime"
+      },
+      {
+        "name": "request_payload_json",
+        "description": "Billing dispute payload serialized as JSON.",
+        "required": true,
+        "type": "Text"
+      },
+      {
+        "name": "workspace_id",
+        "description": "Workspace identifier that owns both lakehouses.",
+        "required": true,
+        "type": "Guid"
+      },
+      {
+        "name": "hotel_guest_services_lakehouse_id",
+        "description": "HotelGuestServices lakehouse identifier.",
+        "required": true,
+        "type": "Guid"
+      }
+    ]
+  },
+  "HotelServiceRequestAction": {
+    "parameters": [
+      {
+        "name": "action",
+        "description": "Requested service or maintenance mutation.",
+        "required": true,
+        "type": "Text",
+        "allowedValues": [
+          "create",
+          "update",
+          "resolve"
+        ]
+      },
+      {
+        "name": "confirmation_id",
+        "description": "Explicit confirmation identifier supplied by the caller.",
+        "required": true,
+        "type": "Guid"
+      },
+      {
+        "name": "idempotency_key",
+        "description": "Idempotency key for replay-safe execution.",
+        "required": true,
+        "type": "Guid"
+      },
+      {
+        "name": "expected_record_version",
+        "description": "Optimistic concurrency record version expected by the caller.",
+        "required": false,
+        "type": "Integer"
+      },
+      {
+        "name": "request_timestamp_utc",
+        "description": "UTC timestamp of the write request.",
+        "required": true,
+        "type": "DateTime"
+      },
+      {
+        "name": "request_payload_json",
+        "description": "Service or maintenance payload serialized as JSON.",
+        "required": true,
+        "type": "Text"
+      },
+      {
+        "name": "workspace_id",
+        "description": "Workspace identifier that owns both lakehouses.",
+        "required": true,
+        "type": "Guid"
+      },
+      {
+        "name": "hotel_operations_lakehouse_id",
+        "description": "HotelOperations lakehouse identifier.",
+        "required": true,
+        "type": "Guid"
+      },
+      {
+        "name": "hotel_guest_services_lakehouse_id",
+        "description": "HotelGuestServices lakehouse identifier.",
+        "required": true,
+        "type": "Guid"
+      }
+    ]
+  },
+  "HotelAggregateRefresh": {
+    "parameters": [
+      {
+        "name": "correlation_id",
+        "description": "Correlation identifier for the refresh request.",
+        "required": true,
+        "type": "Guid"
+      },
+      {
+        "name": "refresh_scope",
+        "description": "Refresh scope for downstream aggregates.",
+        "required": true,
+        "type": "Text",
+        "allowedValues": [
+          "guest_services",
+          "operations_shortcuts",
+          "all"
+        ]
+      },
+      {
+        "name": "force_full_rebuild",
+        "description": "Force a full rebuild instead of an incremental refresh.",
+        "required": true,
+        "type": "Boolean"
+      },
+      {
+        "name": "workspace_id",
+        "description": "Workspace identifier that owns both lakehouses.",
+        "required": true,
+        "type": "Guid"
+      },
+      {
+        "name": "hotel_guest_services_lakehouse_id",
+        "description": "HotelGuestServices lakehouse identifier.",
+        "required": true,
+        "type": "Guid"
+      }
+    ]
+  },
+  "HotelDataAgentRuntimePublish": {
+    "parameters": [
+      {
+        "name": "workspace_id",
+        "description": "Workspace identifier that owns the data agent.",
+        "required": true,
+        "type": "Guid"
+      },
+      {
+        "name": "data_agent_id",
+        "description": "Existing data-agent item identifier.",
+        "required": true,
+        "type": "Guid"
+      },
+      {
+        "name": "capacity_id",
+        "description": "Capacity identifier used for diagnostics and traceability.",
+        "required": true,
+        "type": "Guid"
+      },
+      {
+        "name": "publish_mode",
+        "description": "Publish mode.",
+        "required": true,
+        "type": "Text",
+        "allowedValues": [
+          "deploy",
+          "validate_only"
+        ]
+      },
+      {
+        "name": "published_description",
+        "description": "Description to stamp when the data agent is published.",
+        "required": false,
+        "type": "Text"
+      }
+    ]
+  }
+}

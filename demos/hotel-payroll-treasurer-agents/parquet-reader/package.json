@@ -1,0 +1,15 @@
+{
+  "name": "finance-parquet-reader",
+  "version": "1.0.0",
+  "private": true,
+  "type": "module",
+  "engines": {
+    "node": ">=24"
+  },
+  "dependencies": {
+    "hyparquet": "1.31.2"
+  },
+  "devDependencies": {
+    "hyparquet-writer": "0.16.10"
+  }
+}

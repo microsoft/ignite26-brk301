@@ -1,0 +1,76 @@
+{
+  "$schema": "https://developer.microsoft.com/json-schemas/fabric/item/report/definition/visualContainer/2.0.0/schema.json",
+  "name": "channel_table",
+  "position": {
+    "x": 912,
+    "y": 684,
+    "z": 8,
+    "height": 492,
+    "width": 864,
+    "tabOrder": 8
+  },
+  "visual": {
+    "visualType": "tableEx",
+    "query": {
+      "queryState": {
+        "Values": {
+          "projections": [
+            {
+              "field": {
+                "Column": {
+                  "Expression": {
+                    "SourceRef": {
+                      "Entity": "Booking Pace Daily"
+                    }
+                  },
+                  "Property": "Channel"
+                }
+              },
+              "queryRef": "Booking Pace Daily.Channel",
+              "active": true
+            },
+            {
+              "field": {
+                "Aggregation": {
+                  "Expression": {
+                    "Column": {
+                      "Expression": {
+                        "SourceRef": {
+                          "Entity": "Booking Pace Daily"
+                        }
+                      },
+                      "Property": "Future Bookings"
+                    }
+                  },
+                  "Function": 0
+                }
+              },
+              "queryRef": "Sum(Booking Pace Daily.Future Bookings)",
+              "active": true
+            },
+            {
+              "field": {
+                "Aggregation": {
+                  "Expression": {
+                    "Column": {
+                      "Expression": {
+                        "SourceRef": {
+                          "Entity": "Booking Pace Daily"
+                        }
+                      },
+                      "Property": "Booked Revenue"
+                    }
+                  },
+                  "Function": 0
+                }
+              },
+              "queryRef": "Sum(Booking Pace Daily.Booked Revenue)",
+              "active": true
+            }
+          ]
+        }
+      }
+    },
+    "drillFilterOtherVisuals": true
+  }
+}

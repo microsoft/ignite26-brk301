@@ -1,0 +1,10 @@
+{
+  "authMode": "fab",
+  "tenantId": "",
+  "capacityId": "",
+  "discoverRemote": true,
+  "sourceRoot": "data/generated",
+  "state": "scripts/fabric/deployment-state/fabric-state.json",
+  "topology": "fabric/topology.json",
+  "workspaceId": ""
+}

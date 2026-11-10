@@ -1,0 +1,20 @@
+[
+  {
+    "id": "PAYROLL-001",
+    "title": "Hotel payroll preparation and account ownership",
+    "role": "hotel_finance",
+    "content": "The hotel payroll obligation is USD 25000.00; the initial hotel-payroll balance is USD 10000.00 and hotel-reserve balance is USD 50000.00. Both accounts belong to the configured hotel owner. Hotel Payroll reviews governed Fabric IQ payroll obligations and asks Hotel Treasurer for authoritative balances and funding assistance. Guest folios are not bank cash. Hotel Payroll cannot execute transfers. The agents collaborate as independent peers through their own Microsoft 365 Teams identities and mailboxes, not a fixed caller/subagent hierarchy. A payroll funding request can require a USD 15000.00 reserve-to-payroll ledger transfer."
+  },
+  {
+    "id": "TRANSFER-001",
+    "title": "Banking transfer authorization and exact approval binding",
+    "role": "banking_operations",
+    "content": "All transfers are controlled. Hotel Treasurer is the only financial execution role. Recheck account ownership, currency, current source balance and policy against the authoritative transactional ledger immediately before execution. Amounts are integer cents. Transfers above USD 10000.00 require one valid authenticated approval from either of the two configured tenant approvers, Alex Morgan or Maria Garcia. Exactly USD 10000.00 does not require approval. Approval binds the exact source account, destination account, amount, currency and idempotency key. Changed details require a new or superseding proposal. Fabric IQ is an analytical projection and is never financial write authority."
+  },
+  {
+    "id": "APPROVAL-001",
+    "title": "Dual-channel notification, durable decisions and recovery",
+    "role": "both",
+    "content": "Create one durable approval request and notify both eligible people through both Teams and email: four deliveries with the same request reference. Either eligible person may respond through either channel. Authenticate tenant and sender object IDs from the trusted Microsoft 365 activity; never authorize based on a display name, claimed email address or model interpretation of identity. The first valid decision atomically closes the request. Later replies cannot alter it. There is no automatic expiry. A valid approval can proceed despite a failed notification, but report and retry known notification failures within the configured limit. An uncertain send must be reconciled rather than blindly replayed. Stable idempotency and a whole-state atomic commit prevent duplicate debit/credit effects. After execution, Hotel Treasurer sends its peer the confirmation; Hotel Payroll verifies the result and reports the funding outcome."
+  }
+]

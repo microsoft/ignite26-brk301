@@ -1,0 +1,30 @@
+/// Authoritative HotelOperations.dbo.work_orders.
+table work_orders
+	lineageTag: 00000000-0000-4000-8000-000000000086
+
+	column work_order_id
+		dataType: string
+		sourceColumn: work_order_id
+		lineageTag: 00000000-0000-4000-8000-000000000202
+
+	column maintenance_request_id
+		dataType: string
+		sourceColumn: maintenance_request_id
+		lineageTag: 00000000-0000-4000-8000-000000000014
+
+	column priority
+		dataType: string
+		sourceColumn: priority
+		lineageTag: 00000000-0000-4000-8000-000000000004
+
+	column status
+		dataType: string
+		sourceColumn: status
+		lineageTag: 00000000-0000-4000-8000-000000000053
+
+	partition work_orders = entity
+		mode: directLake
+		source
+			entityName: work_orders
+			schemaName: dbo
+			expressionSource: HotelOperationsQuery

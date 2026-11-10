@@ -1,0 +1,30 @@
+/// Authoritative HotelOperations.dbo.outlets.
+table outlets
+	lineageTag: 00000000-0000-4000-8000-000000000006
+
+	column outlet_id
+		dataType: string
+		sourceColumn: outlet_id
+		lineageTag: 00000000-0000-4000-8000-000000000190
+
+	column property_id
+		dataType: string
+		sourceColumn: property_id
+		lineageTag: 00000000-0000-4000-8000-000000000052
+
+	column name
+		dataType: string
+		sourceColumn: name
+		lineageTag: 00000000-0000-4000-8000-000000000109
+
+	column outlet_type
+		dataType: string
+		sourceColumn: outlet_type
+		lineageTag: 00000000-0000-4000-8000-000000000050
+
+	partition outlets = entity
+		mode: directLake
+		source
+			entityName: outlets
+			schemaName: dbo
+			expressionSource: HotelOperationsQuery

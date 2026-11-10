@@ -1,14 +1,55 @@
-# Project
+# Ignite 2026 BRK301: From grounded answers to agents that act
 
-> This repo has been populated by an initial template to help get you started. Please
-> make sure to update the content to build a great experience for community-building.
+One hotel story, three agents, two demonstrations: start with the Hotel Guest
+Services customer-service agent using Microsoft IQ, then bring Hotel Payroll
+and Hotel Treasurer into the same Microsoft Teams group chat. These two agents
+with accounts coordinate payroll funding with human approval through Agent 365.
 
-As the maintainer of this project, please make a few updates:
+| Agent | Role | Demo |
+| --- | --- | --- |
+| Hotel Guest Services | Answers customer-service questions using Foundry IQ policy and property knowledge, Fabric IQ operational data, and Work IQ workplace context. | [Customer-service agent](demos/customer-service-agent/README.md) |
+| Hotel Payroll | Identifies the payroll funding shortfall and requests funding in the shared chat. | [Payroll funding](demos/hotel-payroll-treasurer-agents/README.md) |
+| Hotel Treasurer | Coordinates human approval, executes the authorized synthetic transfer, and reports the result. | [Payroll funding](demos/hotel-payroll-treasurer-agents/README.md) |
 
-- Improving this README.MD file to provide a great experience
-- Updating SUPPORT.MD with content about this project's support experience
-- Understanding the security reporting process in SECURITY.MD
-- Remove this section from the README
+`hotel-payroll-treasurer-agents` is the shared demo folder for Hotel Payroll and
+Hotel Treasurer; `hotel_payroll_treasurer_agents` is its Python package name,
+not another agent.
+
+Start with the [session walkthrough](docs/demo-walkthrough.md), then read the
+[architecture](docs/architecture.md) and [setup guide](docs/setup.md).
+The projects have independent environments and deployment entry points; do not
+install both Python dependency sets in one environment.
+
+## What is included
+
+- Foundry Hosted Agent implementations, prompts, tools, infrastructure templates,
+  synthetic hotel datasets, knowledge documents, and tests.
+- An optional authenticated voice frontend for customer service.
+- Two independent agents with accounts, each with its own Agent 365 identity,
+  and a durable, idempotent simulated finance ledger with approval and
+  duplicate-delivery handling.
+- Offline checks and GitHub Actions validation that do not deploy resources,
+  send messages, hire agents, or move money.
+
+This is a conference sample, not a production banking integration or a
+one-command tenant deployment. Cloud execution requires your own Azure,
+Microsoft Fabric, Microsoft 365, and Agent 365 access, permissions, capacity,
+and compatible preview features. The sample contains no live tenant bindings.
+Values beginning with `replace`, `REPLACE_WITH_`, and sample UUIDs beginning
+`00000000-0000-4000-8000-` must be replaced with your own deployment outputs.
+
+## Validation
+
+See each project's README for isolated local checks. The
+[validation workflow](.github/workflows/validate.yml) runs customer-service
+Python checks, the voice frontend checks, the Agent 365 bridge tests, payroll
+tests, and the repository publication checks.
+
+Source lineage and intentional exclusions are recorded in
+[source attribution](docs/source-attribution.md). Slide-derived visuals are not
+included in this revision; the session deck remains a separate presentation.
+No live chat transcripts, tenant screenshots, or operator acceptance evidence
+are distributed with the sample.
 
 ## Contributing
 

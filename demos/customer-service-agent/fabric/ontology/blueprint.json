@@ -1,0 +1,23 @@
+{
+  "displayName": "HotelOperationsOntology",
+  "description": "Hotel operations and guest-service entity context across both authoritative lakehouses.",
+  "itemType": "Ontology",
+  "definitionFormat": "TMDL",
+  "definitionRoot": "fabric/ontology/v2",
+  "includePaths": [
+    ".platform",
+    "database.tmdl",
+    "model.tmdl",
+    "namespaces/**",
+    "expressions.tmdl",
+    "relationships.tmdl",
+    "entityRelationships.tmdl",
+    "tables/**",
+    "entities/**"
+  ],
+  "deployable": true,
+  "dependencies": [
+    "lakehouse:HotelGuestServices",
+    "lakehouse:HotelOperations"
+  ]
+}

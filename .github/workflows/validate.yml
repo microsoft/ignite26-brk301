@@ -1,0 +1,104 @@
+name: Validate demo sources
+
+on:
+  pull_request:
+  push:
+    branches: [main]
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+jobs:
+  publication:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: "3.13"
+      - run: python scripts/check_public_sample.py
+      - run: python -m unittest discover -s tests -v
+
+  customer-service-agent:
+    runs-on: ubuntu-latest
+    defaults:
+      run:
+        working-directory: demos/customer-service-agent
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: "3.13"
+      - name: Install isolated Python dependencies
+        run: |
+          python -m pip install -e "./src/hotel-servicing-agent[dev]" -e "./web/backend[dev]"
+          python -m pip install -e "./evaluation/assert"
+      - name: Check Python source
+        run: |
+          python -m ruff check src web/backend scripts tests evaluation/assert/src evaluation/assert/tests
+          python -m ruff format --check src web/backend scripts tests evaluation/assert/src evaluation/assert/tests
+          python -m mypy src/hotel-servicing-agent/hotel_servicing_agent web/backend/hotel_voice_proxy scripts evaluation/assert/src
+          python -m pytest --ignore=tests/unit/test_bridge_readiness.py --ignore=tests/unit/test_private_vault_bootstrap.py
+          python -m pytest evaluation/assert/tests
+          python scripts/validate_technical_naming.py
+          python scripts/validate_configuration.py
+          python scripts/run_assert_evaluation.py validate
+
+  voice-frontend:
+    runs-on: ubuntu-latest
+    defaults:
+      run:
+        working-directory: demos/customer-service-agent
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: "22"
+          cache: npm
+          cache-dependency-path: demos/customer-service-agent/web/frontend/package-lock.json
+      - run: npm --prefix web/frontend ci
+      - run: npm --prefix web/frontend test
+      - run: npm --prefix web/frontend run lint
+      - run: npm --prefix web/frontend run typecheck
+      - run: npm --prefix web/frontend run build
+
+  agent-bridge:
+    runs-on: ubuntu-latest
+    defaults:
+      run:
+        working-directory: demos/customer-service-agent
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: "3.13"
+      - run: python -m pip install -r agent/requirements.txt -r agent/bootstrap/requirements.txt "pytest==9.1.1"
+      - run: python -m compileall -q agent
+      - run: python -m pytest tests/unit/test_bridge_readiness.py tests/unit/test_private_vault_bootstrap.py
+
+  hotel-payroll-treasurer-agents:
+    runs-on: ubuntu-latest
+    defaults:
+      run:
+        working-directory: demos/hotel-payroll-treasurer-agents
+    env:
+      PYTHONPATH: src:scripts
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: "3.13"
+      - uses: actions/setup-node@v4
+        with:
+          node-version: "24"
+      - run: python -m pip install -e ".[host]"
+      - run: npm --prefix parquet-reader ci --ignore-scripts
+      - run: python -m unittest discover -s tests -v
+      - run: python scripts/fabric_test.py
+      - name: Build runtime without private release artifacts
+        run: docker build -f infra/runtime.Dockerfile -t brk301-payroll:check .
+      - name: Check SDK and reader in built image
+        run: |
+          docker run --rm --network none --entrypoint python brk301-payroll:check -c "import hotel_payroll_treasurer_agents.host"
+          docker run --rm --network none --workdir /app/parquet-reader --entrypoint node brk301-payroll:check --input-type=module -e "await import('hyparquet')"

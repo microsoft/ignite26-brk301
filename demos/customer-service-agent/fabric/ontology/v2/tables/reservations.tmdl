@@ -1,0 +1,35 @@
+/// Authoritative HotelGuestServices.dbo.reservations.
+table reservations
+	lineageTag: 00000000-0000-4000-8000-000000000091
+
+	column reservation_id
+		dataType: string
+		sourceColumn: reservation_id
+		lineageTag: 00000000-0000-4000-8000-000000000110
+
+	column guest_id
+		dataType: string
+		sourceColumn: guest_id
+		lineageTag: 00000000-0000-4000-8000-000000000132
+
+	column property_id
+		dataType: string
+		sourceColumn: property_id
+		lineageTag: 00000000-0000-4000-8000-000000000122
+
+	column check_in
+		dataType: dateTime
+		sourceColumn: check_in
+		lineageTag: 00000000-0000-4000-8000-000000000064
+
+	column status
+		dataType: string
+		sourceColumn: status
+		lineageTag: 00000000-0000-4000-8000-000000000176
+
+	partition reservations = entity
+		mode: directLake
+		source
+			entityName: reservations
+			schemaName: dbo
+			expressionSource: HotelGuestServicesQuery

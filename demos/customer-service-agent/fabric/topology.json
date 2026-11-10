@@ -1,0 +1,187 @@
+{
+  "workspace": {
+    "capacityId": null,
+    "capacityRegion": "Central US",
+    "description": "Fabric workspace for authoritative hotel operations and guest services.",
+    "displayName": "Hotel"
+  },
+  "lakehouses": [
+    {
+      "authoritativeTables": [
+        "properties",
+        "room_types",
+        "rooms",
+        "amenities",
+        "property_amenities",
+        "daily_inventory",
+        "daily_rates",
+        "property_daily_metrics",
+        "outlets",
+        "rate_plans",
+        "maintenance_requests",
+        "work_orders"
+      ],
+      "defaultSchema": "dbo",
+      "description": "Authoritative operations lakehouse for property, inventory, rates, outlets, and maintenance/work-order data.",
+      "displayName": "HotelOperations",
+      "enableSchemas": false,
+      "shortcuts": []
+    },
+    {
+      "authoritativeTables": [
+        "guests",
+        "reservations",
+        "reservation_guests",
+        "stays",
+        "room_assignments",
+        "restaurant_reservations",
+        "folios",
+        "folio_transactions",
+        "payments",
+        "adjustments",
+        "billing_disputes",
+        "special_requests",
+        "action_confirmations",
+        "idempotency_records",
+        "audit_events",
+        "action_sagas"
+      ],
+      "defaultSchema": "dbo",
+      "description": "Authoritative guest-services lakehouse for guests, reservations, folios, service requests, and mutation control tables.",
+      "displayName": "HotelGuestServices",
+      "enableSchemas": false,
+      "shortcuts": [
+        {
+          "name": "ops_properties",
+          "path": "Tables",
+          "sourceLakehouse": "HotelOperations",
+          "sourcePath": "Tables/properties"
+        },
+        {
+          "name": "ops_room_types",
+          "path": "Tables",
+          "sourceLakehouse": "HotelOperations",
+          "sourcePath": "Tables/room_types"
+        },
+        {
+          "name": "ops_outlets",
+          "path": "Tables",
+          "sourceLakehouse": "HotelOperations",
+          "sourcePath": "Tables/outlets"
+        },
+        {
+          "name": "ops_daily_inventory",
+          "path": "Tables",
+          "sourceLakehouse": "HotelOperations",
+          "sourcePath": "Tables/daily_inventory"
+        },
+        {
+          "name": "ops_property_daily_metrics",
+          "path": "Tables",
+          "sourceLakehouse": "HotelOperations",
+          "sourcePath": "Tables/property_daily_metrics"
+        },
+        {
+          "name": "ops_maintenance_requests",
+          "path": "Tables",
+          "sourceLakehouse": "HotelOperations",
+          "sourcePath": "Tables/maintenance_requests"
+        },
+        {
+          "name": "ops_work_orders",
+          "path": "Tables",
+          "sourceLakehouse": "HotelOperations",
+          "sourcePath": "Tables/work_orders"
+        }
+      ]
+    }
+  ],
+  "notebooks": [
+    {
+      "contractKey": "HotelInitialLoad",
+      "defaultLakehouse": "HotelGuestServices",
+      "definitionPath": "fabric/notebooks/initial_load.ipynb",
+      "description": "Materialize authoritative hotel records as governed lakehouse Delta tables.",
+      "displayName": "HotelInitialLoad"
+    },
+    {
+      "contractKey": "HotelAuthoritativeReset",
+      "defaultLakehouse": "HotelGuestServices",
+      "definitionPath": "fabric/notebooks/deterministic_reset.ipynb",
+      "description": "Restore one or both lakehouses to the authoritative baseline and rerun the initial load.",
+      "displayName": "HotelAuthoritativeReset"
+    },
+    {
+      "contractKey": "HotelValidation",
+      "defaultLakehouse": "HotelGuestServices",
+      "definitionPath": "fabric/notebooks/validation.ipynb",
+      "description": "Validate source inputs, authoritative Delta tables, shortcuts, required business records, and reconciliation rules.",
+      "displayName": "HotelValidation"
+    },
+    {
+      "contractKey": "HotelReservationAction",
+      "defaultLakehouse": "HotelGuestServices",
+      "definitionPath": "fabric/notebooks/reservation_action.ipynb",
+      "description": "Execute reservation create/change/cancel mutations with typed parameters, optimistic concurrency, and immutable audit events.",
+      "displayName": "HotelReservationAction"
+    },
+    {
+      "contractKey": "HotelRestaurantAction",
+      "defaultLakehouse": "HotelGuestServices",
+      "definitionPath": "fabric/notebooks/restaurant_action.ipynb",
+      "description": "Execute restaurant reservation create/change/cancel mutations with typed parameters, optimistic concurrency, and immutable audit events.",
+      "displayName": "HotelRestaurantAction"
+    },
+    {
+      "contractKey": "HotelBillingDisputeAction",
+      "defaultLakehouse": "HotelGuestServices",
+      "definitionPath": "fabric/notebooks/billing_dispute_action.ipynb",
+      "description": "Open, update, and resolve billing disputes with optimistic concurrency, immutable audit events, and explicit conflicts.",
+      "displayName": "HotelBillingDisputeAction"
+    },
+    {
+      "contractKey": "HotelServiceRequestAction",
+      "defaultLakehouse": "HotelGuestServices",
+      "definitionPath": "fabric/notebooks/service_request_action.ipynb",
+      "description": "Execute guest service and maintenance orchestration actions with saga tracking and pending_reconciliation handling.",
+      "displayName": "HotelServiceRequestAction"
+    },
+    {
+      "contractKey": "HotelAggregateRefresh",
+      "defaultLakehouse": "HotelGuestServices",
+      "definitionPath": "fabric/notebooks/aggregate_refresh.ipynb",
+      "description": "Refresh governed aggregate tables used by the semantic model, report, ontology summaries, and data-agent answer paths.",
+      "displayName": "HotelAggregateRefresh"
+    },
+    {
+      "contractKey": "HotelDataAgentRuntimePublish",
+      "defaultLakehouse": "HotelGuestServices",
+      "definitionPath": "fabric/notebooks/data_agent_runtime_publish.ipynb",
+      "description": "Validate and publish the draft HotelOperationsAgent through the Fabric DataAgent runtime APIs.",
+      "displayName": "HotelDataAgentRuntimePublish"
+    }
+  ],
+  "blueprints": {
+    "semanticModel": {
+      "displayName": "HotelOperationsModel",
+      "path": "fabric/semantic-model/blueprint.json",
+      "deployable": true
+    },
+    "report": {
+      "displayName": "HotelOperationsReport",
+      "path": "fabric/report/blueprint.json",
+      "deployable": true
+    },
+    "ontology": {
+      "displayName": "HotelOperationsOntology",
+      "path": "fabric/ontology/blueprint.json",
+      "deployable": true
+    },
+    "dataAgent": {
+      "displayName": "HotelOperationsAgent",
+      "path": "fabric/data-agent/draft/agent.blueprint.json",
+      "deployable": true
+    }
+  },
+  "contractFile": "fabric/notebooks/contracts.json"
+}

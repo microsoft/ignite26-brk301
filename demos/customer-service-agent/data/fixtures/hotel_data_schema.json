@@ -1,0 +1,67 @@
+{
+  "schema_version": 3,
+  "as_of_date": "2026-11-08",
+  "temporal_contract": {
+    "completed_departed_no_show_cancelled": "check_out < 2026-11-08",
+    "future_arriving": "check_in > 2026-11-08",
+    "future": "check_in > 2026-11-08",
+    "arriving": "check_in > 2026-11-08",
+    "in_house": "check_in < 2026-11-08 < check_out",
+    "stay_dates": "match the reservation lifecycle and dates, including planned future stays",
+    "linked_dates": "folio, dispute, service, maintenance and control dates shift together by 68 days",
+    "daily_occupancy": "modeled room nights reconcile to completed, in-house and planned future stays"
+  },
+  "date_range": {
+    "start": "2026-05-08",
+    "end": "2027-06-07"
+  },
+  "required_tables": [
+    "properties",
+    "room_types",
+    "rooms",
+    "outlets",
+    "amenities",
+    "property_amenities",
+    "guests",
+    "reservations",
+    "stays",
+    "restaurant_reservations",
+    "folios",
+    "folio_transactions",
+    "payments",
+    "billing_disputes",
+    "special_requests",
+    "maintenance_requests",
+    "work_orders",
+    "daily_inventory",
+    "daily_rates",
+    "property_daily_metrics",
+    "action_confirmations",
+    "idempotency_records",
+    "audit_events"
+  ],
+  "status_values": {
+    "reservation": [
+      "future",
+      "arriving",
+      "departed",
+      "cancelled",
+      "no_show",
+      "completed",
+      "in_house"
+    ],
+    "stay": [
+      "completed",
+      "future",
+      "in_house"
+    ]
+  },
+  "payment_policy": {
+    "card_mask_pattern": "**** **** **** 1234",
+    "forbidden_columns": [
+      "card_number",
+      "cvv",
+      "pan"
+    ]
+  }
+}

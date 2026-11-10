@@ -1,0 +1,66 @@
+name: hotel-payroll-treasurer-agents
+services:
+  hotel:
+    project: .
+    host: azure.ai.agent
+    language: python
+    kind: hosted
+    name: hotel-finance-autopilot
+    image: ${FINANCE_RUNTIME_IMAGE}
+    container:
+      resources:
+        cpu: "1"
+        memory: 2Gi
+    protocols:
+      - protocol: activity
+        version: v1
+    environmentVariables:
+      - name: TENANT_ID
+        value: ${AZURE_TENANT_ID}
+      - name: FINANCE_ROLE
+        value: hotel_finance
+      - name: FINANCE_ACTIVITY_AUTHENTICATION
+        value: foundry_gateway
+      - name: FINANCE_BINDINGS_URL
+        value: ${FINANCE_BINDINGS_URL}
+      - name: FINANCE_MODEL_ENDPOINT
+        value: ${FINANCE_MODEL_ENDPOINT}
+    agentEndpoint:
+      protocols: [activity]
+      protocolConfiguration:
+        activity:
+          enableM365PublicEndpoint: true
+      authorizationSchemes:
+        - type: BotServiceTenant
+  bank:
+    project: .
+    host: azure.ai.agent
+    language: python
+    kind: hosted
+    name: banking-operations-autopilot
+    image: ${FINANCE_RUNTIME_IMAGE}
+    container:
+      resources:
+        cpu: "1"
+        memory: 2Gi
+    protocols:
+      - protocol: activity
+        version: v1
+    environmentVariables:
+      - name: TENANT_ID
+        value: ${AZURE_TENANT_ID}
+      - name: FINANCE_ROLE
+        value: banking_operations
+      - name: FINANCE_ACTIVITY_AUTHENTICATION
+        value: foundry_gateway
+      - name: FINANCE_BINDINGS_URL
+        value: ${FINANCE_BINDINGS_URL}
+      - name: FINANCE_MODEL_ENDPOINT
+        value: ${FINANCE_MODEL_ENDPOINT}
+    agentEndpoint:
+      protocols: [activity]
+      protocolConfiguration:
+        activity:
+          enableM365PublicEndpoint: true
+      authorizationSchemes:
+        - type: BotServiceTenant
