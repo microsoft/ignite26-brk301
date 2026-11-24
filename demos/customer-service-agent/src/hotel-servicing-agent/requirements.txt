@@ -11,4 +11,4 @@ jsonschema==4.26.0
 mcp==1.28.1
 microsoft-agents-authentication-msal==1.1.0
 openai==2.45.0
-python-dotenv==1.2.1
+python-dotenv==1.2.2
